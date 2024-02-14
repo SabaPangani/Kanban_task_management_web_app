@@ -1,9 +1,11 @@
+import ThemeToggle from "@/components/theme-toggle";
 import Image from "next/image";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <input type="text" className="input" placeholder="Enter task name"/>
+      <ThemeToggle />
+      <button className="btn-secondary">Hello</button>
     </main>
   );
 }
