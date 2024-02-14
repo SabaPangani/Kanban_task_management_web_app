@@ -22,6 +22,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  text-decoration: none;
+  list-style-type: none;
 }
 body {
   color: rgb(var(--foreground-rgb));
@@ -41,7 +43,7 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply w-[255px] h-[48px] bg-purple rounded-3xl text-white font-medium hover:bg-purple-hover transition-all duration-200;
+    @apply w-[255px] h-[48px] bg-purple rounded-3xl dark:opacity-80 text-white font-medium hover:bg-purple-hover transition-all duration-200;
   }
   .btn-primary-s {
     @apply w-[255px] h-[40px] bg-purple rounded-[20px] text-white font-medium hover:bg-purple-hover transition-all duration-200;
