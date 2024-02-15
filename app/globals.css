@@ -43,18 +43,18 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply w-[255px] h-[48px] bg-purple rounded-3xl dark:opacity-80 text-white font-medium hover:bg-purple-hover transition-all duration-200;
+    @apply w-[255px] h-[48px] bg-purple rounded-3xl text-sm dark:opacity-80 text-white font-medium hover:bg-purple-hover transition-all duration-200;
   }
   .btn-primary-s {
-    @apply w-[255px] h-[40px] bg-purple rounded-[20px] text-white font-medium hover:bg-purple-hover transition-all duration-200;
+    @apply w-[255px] h-[40px] text-sm bg-purple rounded-[20px] text-white font-medium hover:bg-purple-hover transition-all duration-200;
   }
   .btn-secondary {
-    @apply w-[255px] h-[40px] bg-light-gray dark:bg-white dark:hover:bg-white rounded-[20px] text-purple font-medium transition-all duration-200 hover:bg-gray-hover;
+    @apply w-[255px] h-[40px] bg-light-gray dark:bg-white text-sm dark:hover:bg-white rounded-[20px] text-purple font-medium transition-all duration-200 hover:bg-lines;
   }
   .btn-destructive {
     @apply w-[255px] h-[40px] bg-red rounded-[20px] text-white font-medium transition-all duration-200 hover:bg-red-hover;
   }
   .input {
-    @apply w-[350px] h-10 rounded-[4px] border border-solid border-medium-gray px-5 text-sm outline-none invalid:bg-red bg-none;
+    @apply w-[350px] h-10 rounded-[4px] border border-solid border-[#828FA340] bg-transparent px-5 text-sm outline-none invalid:bg-red placeholder:text-medium-gray;
   }
 }

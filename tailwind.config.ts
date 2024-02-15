@@ -22,7 +22,7 @@ const config: Config = {
         "dark-gray": "#2B2C37",
         gray: "#3E3F4E",
         "medium-gray": "#828FA3",
-        "gray-hover": "#E4EBFA",
+        "lines": "#E4EBFA",
         "light-gray": "#F4F7FD",
         red: "#EA5555",
         "red-hover": "#FF9898",
