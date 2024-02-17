@@ -1,5 +1,10 @@
 "use client";
 
+import { useState } from "react";
+import { Column as ColumnType } from "@/shared/types/Board";
+import Column from "./Column";
+import { useBoard } from "@/hooks/useBoard";
+
 export default function CreateBoard({
   setShowModal,
   showModal,
@@ -7,6 +12,9 @@ export default function CreateBoard({
   setShowModal: (value: boolean) => void;
   showModal: boolean;
 }) {
+  const [columns, setColumns] = useState<ColumnType[]>([]);
+  const { addBoard } = useBoard()!;
+
   return (
     <>
       <div
@@ -30,16 +38,34 @@ export default function CreateBoard({
             <label className="text-xs mb-[8px] font-medium text-medium-gray dark:text-white">
               Board Columns
             </label>
-            <input
-              type="text"
-              className="input"
-              placeholder="e.g. Web Design"
-            />
-            <button className="btn-secondary w-full mt-3 h-[38px]">
+            <ul className="flex flex-col gap-y-3">
+              {columns.map((column) => (
+                <li key={column.name}>
+                  <Column />
+                </li>
+              ))}
+            </ul>
+            <button
+              className="btn-secondary w-full mt-3 h-[38px] disabled:opacity-20"
+              type="button"
+              onClick={() => {
+                setColumns((prev) => [
+                  ...prev,
+                  { name: "", tasks: [] },
+                ]);
+              }}
+              disabled={columns.length >= 5}
+            >
               + Add New Column
             </button>
           </div>
-          <button className="btn-primary-s w-full mt-4 h-[38px]">
+          <button
+            className="btn-primary-s w-full mt-4 h-[38px]"
+            type="button"
+            onClick={() => {
+              addBoard("", columns);
+            }}
+          >
             Create New Board
           </button>
         </form>

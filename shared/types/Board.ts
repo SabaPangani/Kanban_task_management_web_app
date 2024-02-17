@@ -7,5 +7,6 @@ export interface Board {
 }
 
 export interface Column {
+  name: string;
   tasks: Task[];
 }

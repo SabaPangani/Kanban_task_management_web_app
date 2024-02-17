@@ -4,6 +4,7 @@ import Theme from "@/components/theme-provider";
 import Sidebar from "./sidebar";
 import Navbar from "./navbar";
 import "./globals.css";
+import { BoardProvider } from "@/store/boardContext";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -19,13 +20,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <Theme>
-        <body className={plusJakartaSans.className}>
-          <Navbar />
-          <Sidebar />
-          {children}
-        </body>
-      </Theme>
+      <BoardProvider>
+        <Theme>
+          <body className={plusJakartaSans.className}>
+            <Navbar />
+            <Sidebar />
+            {children}
+          </body>
+        </Theme>
+      </BoardProvider>
     </html>
   );
 }

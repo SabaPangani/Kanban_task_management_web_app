@@ -5,6 +5,7 @@ import { BoardContext as BoardContextType } from "@/shared/types/BoardContext";
 import { Subtask, Task } from "@/shared/types/Task";
 import { v4 as uuid } from "uuid";
 import * as React from "react";
+import { strict } from "assert";
 
 export const BoardContext = React.createContext<BoardContextType | null>(null);
 
@@ -13,14 +14,30 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [boards, setBoards] = React.useState<Board[]>([]);
   const [tasks, setTasks] = React.useState<Task[]>([]);
+  const [columns, setColumns] = React.useState<Column[]>([]);
 
-  const addBoard = (name: string, columns: Column[]) => {
-    const newBoard = {
-      id: uuid().toString(),
-      name: name,
-      columns: columns,
-    } as Board;
-    setBoards((prev) => [...prev, newBoard]);
+  const addBoard = async (name: string, columns: Column[]) => {
+    // const newBoard = {
+    //   id: uuid().toString(),
+    //   name: name,
+    //   columns: columns,
+    // } as Board;
+    // setBoards((prev) => [...prev, newBoard]);
+    try {
+      const board = { name, columns, user: "" };
+      const res = await fetch("/api/board", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(board),
+      });
+
+      console.log("clicked");
+      const json = await res.json();
+      console.log(json.message);
+      if (!res.ok) {
+        console.error("failed to create board", json.message);
+      }
+    } catch (err: any) {}
   };
   const updateBoard = (id: string) => {};
   const removeBoard = (id: string) => {};
