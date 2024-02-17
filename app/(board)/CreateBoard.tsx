@@ -1,10 +1,21 @@
-import React from "react";
+"use client";
 
-export default function CreateBoard() {
+export default function CreateBoard({
+  setShowModal,
+  showModal,
+}: {
+  setShowModal: (value: boolean) => void;
+  showModal: boolean;
+}) {
   return (
     <>
-    <div className="w-screen h-screen z-10 absolute left-0 top-0 bg-black opacity-50"></div>
-      <div className="z-20 bg-white dark:bg-dark-gray rounded-md px-8 py-7 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div
+        className="w-screen h-screen z-10 absolute left-0 top-0 bg-black opacity-50"
+        onClick={() => {
+          setShowModal(false);
+        }}
+      ></div>
+      <div className="z-20 bg-white dark:bg-dark-gray rounded-md px-8 py-7 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all">
         <h1 className="font-semibold mb-5 dark:text-white text-dark">
           Add New Board
         </h1>

@@ -5,8 +5,10 @@ import EyeSVG from "@/components/svgs/EyeSVG";
 import ShowSVG from "@/components/svgs/ShowSVG";
 import ThemeToggle from "@/components/theme-toggle";
 import { useState } from "react";
+import CreateBoard from "./(board)/CreateBoard";
 export default function Sidebar() {
   const [isHidden, setIsHiddden] = useState(false);
+  const [showCreateBoardModal, setShowCreateBoardModal] = useState(false);
   return (
     <>
       <div
@@ -38,7 +40,12 @@ export default function Sidebar() {
                 Roadmap
               </span>
             </li>
-            <li className="flex flex-row items-center gap-x-3">
+            <li
+              className="flex flex-row items-center gap-x-3 cursor-pointer"
+              onClick={() => {
+                setShowCreateBoardModal(true);
+              }}
+            >
               <BoardLogo />
               <span className="font-bold text-purple text-sm">
                 + Create New Board
@@ -66,6 +73,12 @@ export default function Sidebar() {
         >
           <ShowSVG />
         </div>
+      )}
+      {showCreateBoardModal && (
+        <CreateBoard
+          setShowModal={setShowCreateBoardModal}
+          showModal={showCreateBoardModal}
+        />
       )}
     </>
   );

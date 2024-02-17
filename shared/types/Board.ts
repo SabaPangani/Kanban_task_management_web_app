@@ -1,10 +1,11 @@
 import { Task } from "./Task";
 
 export interface Board {
+  id: string;
   name: string;
   columns: Column[];
 }
 
-interface Column {
+export interface Column {
   tasks: Task[];
 }

@@ -1,17 +1,14 @@
 export interface Task {
+  id: string;
   title: string;
   description: string;
-  subtasks: Subtask[];
+  subTasks: Subtask[];
   status: Status;
 }
 
-interface Status {
-  todo: string;
-  doing: string;
-  done: string;
-}
+export type Status = "Todo" | "Doing" | "Done";
 
-interface Subtask {
+export interface Subtask {
   checked: boolean;
   description: string;
 }
