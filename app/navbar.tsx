@@ -1,4 +1,11 @@
+"use client";
+
+import { signOut, useSession } from "next-auth/react";
+
+signOut;
 export default function Navbar() {
+  const { data: session, status } = useSession();
+  console.log(session, status)
   return (
     <nav className="bg-white dark:bg-dark-gray border-b border-lines dark:border-gray flex flex-row items-center px-4">
       <div className="flex flex-row items-center gap-x-4">
@@ -7,7 +14,14 @@ export default function Navbar() {
           <li className="w-[5px] h-[20px] bg-purple rounded-sm opacity-60"></li>
           <li className="w-[5px] h-[20px] bg-purple rounded-sm opacity-50"></li>
         </ul>
-        <h1 className="font-bold text-3xl text-dark dark:text-white">kanban</h1>
+        <h1
+          className="font-bold text-3xl text-dark dark:text-white"
+          onClick={async () => {
+            await signOut();
+          }}
+        >
+          kanban
+        </h1>
         <div className="h-20 w-[1px] bg-lines dark:bg-gray ml-[120px] mr-6"></div>
       </div>
 

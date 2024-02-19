@@ -26,21 +26,23 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     // setBoards((prev) => [...prev, newBoard]);
     try {
       const board = {
-        id: "1",
+        id: "2",
+        name: "Board 1",
         columns: {
           create: [
             {
-              id: "column1_id",
+              id: "column3_id",
               name: "Column Name 1",
-              tasks: [],
+              tasks: { create: [] },
             },
             {
-              id: "column2_id",
+              id: "column4_id",
               name: "Column Name 2",
-              tasks: [],
+              tasks: { create: [] },
             },
           ],
         },
+        userId: "4"
       };
       const res = await fetch("/api/board", {
         method: "POST",
@@ -52,6 +54,7 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
       if (!res.ok) {
         console.error("failed to create board", json.message);
       }
+      console.log(json)
     } catch (err: any) {}
   };
   const updateBoard = (id: string) => {};

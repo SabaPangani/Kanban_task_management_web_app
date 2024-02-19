@@ -61,6 +61,7 @@ model Board {
 
 model Column {
   id      String @id @default(cuid())
+  name    String
   tasks   Task[]
   board   Board  @relation(fields: [boardId], references: [id])
   boardId String

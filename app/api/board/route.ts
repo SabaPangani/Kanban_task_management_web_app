@@ -7,11 +7,11 @@ export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     const data = await req.json();
-    console.log(data);
-    const result = await prisma.board.create({ data });
-
+    const newData = { ...data, userId: session?.user?.email };
+    const result = await prisma.board.create({ data: newData });
     return NextResponse.json({ result }, { status: 200 });
   } catch (err: any) {
+    console.log(err);
     return NextResponse.json({ message: err.message }, { status: 400 });
   }
 }
