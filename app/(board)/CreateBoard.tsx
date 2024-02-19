@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Column as ColumnType } from "@/shared/types/Board";
 import Column from "./Column";
 import { useBoard } from "@/hooks/useBoard";
+import { v4 as uuid } from "uuid";
 
 export default function CreateBoard({
   setShowModal,
@@ -40,7 +41,7 @@ export default function CreateBoard({
             </label>
             <ul className="flex flex-col gap-y-3">
               {columns.map((column) => (
-                <li key={column.name}>
+                <li key={column.id}>
                   <Column />
                 </li>
               ))}
@@ -51,7 +52,7 @@ export default function CreateBoard({
               onClick={() => {
                 setColumns((prev) => [
                   ...prev,
-                  { name: "", tasks: [] },
+                  { id: uuid(), name: "dwasd", tasks: [] },
                 ]);
               }}
               disabled={columns.length >= 5}
