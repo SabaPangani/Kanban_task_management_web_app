@@ -6,6 +6,7 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       backgroundImage: {
@@ -21,7 +22,7 @@ const config: Config = {
         "dark-gray": "#2B2C37",
         gray: "#3E3F4E",
         "medium-gray": "#828FA3",
-        "gray-hover": "#E4EBFA",
+        "lines": "#E4EBFA",
         "light-gray": "#F4F7FD",
         red: "#EA5555",
         "red-hover": "#FF9898",
@@ -30,4 +31,5 @@ const config: Config = {
   },
   plugins: [],
 };
+
 export default config;
