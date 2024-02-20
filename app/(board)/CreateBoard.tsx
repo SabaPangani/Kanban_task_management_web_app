@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Column as ColumnType } from "@/shared/types/Board";
-import Column from "./Column";
+import ColumnInput from "./ColumnInput";
 import { useBoard } from "@/hooks/useBoard";
 import { v4 as uuid } from "uuid";
 
@@ -13,7 +13,7 @@ export default function CreateBoard({
   setShowModal: (value: boolean) => void;
   showModal: boolean;
 }) {
-  const [columns, setColumns] = useState<ColumnType[]>([]);
+  const [columns, setColumns] = useState<ColumnType[] | Array<ColumnType>>([]);
   const { addBoard } = useBoard()!;
 
   return (
@@ -40,9 +40,9 @@ export default function CreateBoard({
               Board Columns
             </label>
             <ul className="flex flex-col gap-y-3">
-              {columns.map((column) => (
+              {columns.map((column: ColumnType) => (
                 <li key={column.id}>
-                  <Column />
+                  <ColumnInput />
                 </li>
               ))}
             </ul>
@@ -50,9 +50,9 @@ export default function CreateBoard({
               className="btn-secondary w-full mt-3 h-[38px] disabled:opacity-20"
               type="button"
               onClick={() => {
-                setColumns((prev) => [
+                setColumns((prev: any) => [
                   ...prev,
-                  { id: uuid(), name: "dwasd", tasks: [] },
+                  { id: uuid(), name: "dwasd", tasks: { create: [] } },
                 ]);
               }}
               disabled={columns.length >= 5}

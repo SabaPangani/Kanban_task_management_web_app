@@ -13,36 +13,44 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [boards, setBoards] = React.useState<Board[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [tasks, setTasks] = React.useState<Task[]>([]);
-  const [columns, setColumns] = React.useState<Column[]>([]);
-  const { data: session } = useSession();
+  const [columns, setColumns] = React.useState([]);
+  const [isCreated, setIsCreated] = React.useState(false);
+  const [selectedBoard, setSelectedBoard] = React.useState<Board>();
+  React.useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const res = await fetch("/api/board");
 
+        if (!res.ok) {
+          throw new Error(`Failed to fetch links ${res.status}`);
+        }
+
+        const { result } = await res.json();
+
+        localStorage.setItem("boards", JSON.stringify(result));
+        setBoards(result);
+        console.log(result, boards);
+      } catch (err: any) {
+        console.error("Error fetching links:", err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+    setIsCreated(false);
+  }, [isCreated == true]);
   const addBoard = async (name: string, columns: Column[]) => {
-    // const newBoard = {
-    //   id: uuid().toString(),
-    //   name: name,
-    //   columns: columns,
-    // } as Board;
-    // setBoards((prev) => [...prev, newBoard]);
     try {
       const board = {
-        id: "2",
-        name: "Board 1",
+        id: uuid().toString(),
+        name,
         columns: {
-          create: [
-            {
-              id: "column3_id",
-              name: "Column Name 1",
-              tasks: { create: [] },
-            },
-            {
-              id: "column4_id",
-              name: "Column Name 2",
-              tasks: { create: [] },
-            },
-          ],
+          create: columns,
         },
-        userId: "4"
       };
       const res = await fetch("/api/board", {
         method: "POST",
@@ -52,10 +60,13 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
 
       const json = await res.json();
       if (!res.ok) {
-        console.error("failed to create board", json.message);
+        throw new Error("failed to create board", json.message);
       }
-      console.log(json)
-    } catch (err: any) {}
+      console.log(json);
+      setIsCreated(true);
+    } catch (err: any) {
+      console.error("Error creating board:", err.message);
+    }
   };
   const updateBoard = (id: string) => {};
   const removeBoard = (id: string) => {};
@@ -78,6 +89,8 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     <BoardContext.Provider
       value={{
         boards,
+        selectedBoard,
+        setSelectedBoard,
         addBoard,
         updateBoard,
         removeBoard,

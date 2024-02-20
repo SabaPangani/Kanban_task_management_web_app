@@ -3,7 +3,8 @@ import { Subtask, Task } from "./Task";
 
 export type BoardContext = {
   boards: Board[];
-  //   tasks: Task[];
+  selectedBoard: Board | undefined;
+  setSelectedBoard: (value: Board) => void;
   addBoard: (name: string, columns: Column[]) => void;
   updateBoard: (id: string) => void;
   removeBoard: (id: string) => void;

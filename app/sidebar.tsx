@@ -6,9 +6,12 @@ import ShowSVG from "@/components/svgs/ShowSVG";
 import ThemeToggle from "@/components/theme-toggle";
 import { useState } from "react";
 import CreateBoard from "./(board)/CreateBoard";
+import { useBoard } from "@/hooks/useBoard";
+import { Board } from "@/shared/types/Board";
 export default function Sidebar() {
   const [isHidden, setIsHiddden] = useState(false);
   const [showCreateBoardModal, setShowCreateBoardModal] = useState(false);
+  const { boards, setSelectedBoard } = useBoard()!;
   return (
     <>
       <div
@@ -18,28 +21,26 @@ export default function Sidebar() {
       >
         <div>
           <h4 className="tracking-[2.4px] font-bold text-medium-gray text-xs mb-8 mt-2">
-            ALL BOARDS
+            ALL BOARDS ({boards.length})
           </h4>
 
           <ul className="flex flex-col gap-y-5">
-            <li className="flex flex-row items-center gap-x-3">
-              <BoardLogo />
-              <span className="font-bold text-medium-gray text-sm">
-                Platform Launch
-              </span>
-            </li>
-            <li className="flex flex-row items-center gap-x-3">
-              <BoardLogo />
-              <span className="font-bold text-medium-gray text-sm">
-                Marketing Plan
-              </span>
-            </li>
-            <li className="flex flex-row items-center gap-x-3">
-              <BoardLogo />
-              <span className="font-bold text-medium-gray text-sm">
-                Roadmap
-              </span>
-            </li>
+            {boards.map((board: Board) => (
+              <li
+                className="flex flex-row items-center gap-x-3"
+                onClick={() => {
+                  const selectedBoard = boards.find(
+                    (brd) => brd.id === board.id
+                  );
+                  setSelectedBoard(selectedBoard as Board);
+                }}
+              >
+                <BoardLogo />
+                <span className="font-bold text-medium-gray text-sm">
+                  {board.name}
+                </span>
+              </li>
+            ))}
             <li
               className="flex flex-row items-center gap-x-3 cursor-pointer"
               onClick={() => {
