@@ -1,9 +1,8 @@
-import Image from "next/image";
-
+import Board from "./(board)/Board";
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <input type="text" className="input" placeholder="Enter task name"/>
+    <main className="bg-light-gray dark:bg-very-dark-gray h-screen">
+      <Board />
     </main>
   );
 }

@@ -53,16 +53,18 @@ model User {
 
 model Board {
   id      String   @id @default(cuid())
+  name    String?
   columns Column[]
-  user    User     @relation(fields: [userId], references: [id])
-  userId  String
+  User    User?    @relation(fields: [userId], references: [id])
+  userId  String?
 }
 
 model Column {
-  id      String  @id @default(cuid())
-  board   Board?  @relation(fields: [boardId], references: [id])
-  boardId String?
+  id      String @id @default(cuid())
+  name    String
   tasks   Task[]
+  board   Board  @relation(fields: [boardId], references: [id])
+  boardId String
 }
 
 model Task {
@@ -71,8 +73,8 @@ model Task {
   description String?
   status      String?
   subTasks    SubTask[]
-  column      Column?   @relation(fields: [columnId], references: [id])
-  columnId    String?
+  column      Column    @relation(fields: [columnId], references: [id])
+  columnId    String
 }
 
 model SubTask {
