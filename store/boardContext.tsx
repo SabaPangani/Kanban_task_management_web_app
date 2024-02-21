@@ -16,7 +16,7 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isLoading, setIsLoading] = React.useState(false);
   const [tasks, setTasks] = React.useState<Task[]>([]);
   const [columns, setColumns] = React.useState([]);
-  const [isCreated, setIsCreated] = React.useState(false);
+  const [refetchBoard, setRefetchBoard] = React.useState(false);
   const [selectedBoard, setSelectedBoard] = React.useState<Board>();
   React.useEffect(() => {
     const fetchData = async () => {
@@ -41,8 +41,8 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     fetchData();
-    setIsCreated(false);
-  }, [isCreated == true]);
+    setRefetchBoard(false);
+  }, [refetchBoard == true]);
   const addBoard = async (name: string, columns: Column[]) => {
     try {
       const board = {
@@ -63,7 +63,7 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
         throw new Error("failed to create board", json.message);
       }
       console.log(json);
-      setIsCreated(true);
+      setRefetchBoard(true);
     } catch (err: any) {
       console.error("Error creating board:", err.message);
     }

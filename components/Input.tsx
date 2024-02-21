@@ -1,11 +1,16 @@
 import { LegacyRef, Ref, Reference, useEffect, useRef, useState } from "react";
 
 interface ColumnInputProps {
-  value: string;
+  type: string;
+  placeholder: string;
   onChange: (newValue: string) => void;
 }
 
-export default function ColumnInput({ value, onChange }: ColumnInputProps) {
+export default function Input({
+  type,
+  placeholder,
+  onChange,
+}: ColumnInputProps) {
   const [isEmpty, setIsEmpty] = useState(false);
   const [touched, setTouched] = useState(false);
 
@@ -27,19 +32,18 @@ export default function ColumnInput({ value, onChange }: ColumnInputProps) {
   };
 
   useEffect(() => {
-    isEmpty ? inputRef.current!.style.border = "1px solid #EA5555" : inputRef.current!.style.border = "1px solid #828FA340";
-      
-    
+    isEmpty
+      ? (inputRef.current!.style.border = "1px solid #EA5555")
+      : (inputRef.current!.style.border = "1px solid #828FA340");
   }, [touched, inputRef.current?.value]);
   return (
     <div className="relative">
       <input
-        type="text"
+        type={type}
         className="input"
         onChange={handleChange}
         onBlur={handleBlur}
-        value={value}
-        placeholder="e.g. Todo"
+        placeholder={placeholder}
         required
         ref={inputRef}
       />

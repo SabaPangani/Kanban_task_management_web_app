@@ -27,7 +27,7 @@ export default function Sidebar() {
           <ul className="flex flex-col gap-y-5">
             {boards.map((board: Board) => (
               <li
-                className="flex flex-row items-center gap-x-3"
+                className="flex flex-row items-center gap-x-3 cursor-pointer"
                 onClick={() => {
                   const selectedBoard = boards.find(
                     (brd) => brd.id === board.id

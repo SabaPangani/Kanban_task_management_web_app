@@ -10,4 +10,5 @@ export interface Column {
   id: string;
   name: string;
   tasks: Task[];
+  boardId: string;
 }

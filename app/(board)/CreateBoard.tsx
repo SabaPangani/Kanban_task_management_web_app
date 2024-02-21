@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { Column as ColumnType } from "@/shared/types/Board";
 import ColumnInput from "./ColumnInput";
 import { useBoard } from "@/hooks/useBoard";
 import { v4 as uuid } from "uuid";
+import Input from "@/components/Input";
 
 export default function CreateBoard({
   setShowModal,
@@ -15,7 +16,12 @@ export default function CreateBoard({
 }) {
   const [columns, setColumns] = useState<ColumnType[] | Array<ColumnType>>([]);
   const { addBoard } = useBoard()!;
+  const [boardName, setBoardName] = useState("");
 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    addBoard(boardName, columns);
+  };
   return (
     <>
       <div
@@ -29,20 +35,36 @@ export default function CreateBoard({
           Add New Board
         </h1>
 
-        <form action="" className="flex flex-col gap-y-2">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-y-2">
           <label className="text-xs font-medium text-medium-gray dark:text-white">
             Board Name
           </label>
-          <input type="text" className="input" placeholder="e.g. Web Design" />
+          <Input
+            type="text"
+            placeholder="e.g. Web Design"
+            onChange={(name) => {
+              setBoardName(name);
+            }}
+          />
 
           <div className="flex flex-col mt-4">
             <label className="text-xs mb-[8px] font-medium text-medium-gray dark:text-white">
               Board Columns
             </label>
             <ul className="flex flex-col gap-y-3">
-              {columns.map((column: ColumnType) => (
+              {columns.map((column: ColumnType, index: number) => (
                 <li key={column.id}>
-                  <ColumnInput />
+                  <ColumnInput
+                    value={column.name}
+                    onChange={(newValue: string) => {
+                      const updatedColumns = [...columns];
+                      updatedColumns[index] = {
+                        ...updatedColumns[index],
+                        name: newValue,
+                      };
+                      setColumns(updatedColumns);
+                    }}
+                  />
                 </li>
               ))}
             </ul>
@@ -52,21 +74,15 @@ export default function CreateBoard({
               onClick={() => {
                 setColumns((prev: any) => [
                   ...prev,
-                  { id: uuid(), name: "dwasd", tasks: { create: [] } },
+                  { id: uuid(), name: "", tasks: { create: [] } },
                 ]);
               }}
-              disabled={columns.length >= 5}
+              disabled={columns.length >= 4}
             >
               + Add New Column
             </button>
           </div>
-          <button
-            className="btn-primary-s w-full mt-4 h-[38px]"
-            type="button"
-            onClick={() => {
-              addBoard("", columns);
-            }}
-          >
+          <button className="btn-primary-s w-full mt-4 h-[38px]" type="submit">
             Create New Board
           </button>
         </form>

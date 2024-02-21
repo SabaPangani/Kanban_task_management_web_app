@@ -1,11 +1,12 @@
 "use client";
 
+import { useBoard } from "@/hooks/useBoard";
 import { signOut, useSession } from "next-auth/react";
 
-signOut;
 export default function Navbar() {
   const { data: session, status } = useSession();
-  console.log(session, status)
+  const { selectedBoard } = useBoard()!;
+  console.log(session, status);
   return (
     <nav className="bg-white dark:bg-dark-gray border-b border-lines dark:border-gray flex flex-row items-center px-4">
       <div className="flex flex-row items-center gap-x-4">
@@ -27,7 +28,7 @@ export default function Navbar() {
 
       <div className="flex w-full items-center justify-between">
         <li className="font-bold tracking-wide text-dark dark:text-white dark:font-semibold">
-          Platform Launch
+          {selectedBoard?.name}
         </li>
 
         <div className="flex flex-row items-center gap-x-5">
