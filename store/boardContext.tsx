@@ -68,7 +68,32 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("Error creating board:", err.message);
     }
   };
-  const updateBoard = (id: string) => {};
+  const updateBoard = async (
+    id: string,
+    boardName: string,
+    columns: Column[]
+  ) => {
+    try {
+      const res = await fetch("/api/board", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          boardId: id,
+          boardName,
+          columns,
+        }),
+      });
+
+      const json = await res.json();
+      if (!res.ok) {
+        console.log(json);
+        throw new Error("failed to update board", json.message);
+      }
+      setRefetchBoard(true);
+    } catch (err: any) {
+      console.error("Error updating board:", err.message);
+    }
+  };
   const removeBoard = (id: string) => {};
   const addColumn = (name: string) => {};
   const removeColumn = (id: string) => {};

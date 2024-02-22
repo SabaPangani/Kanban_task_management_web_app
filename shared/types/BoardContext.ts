@@ -6,7 +6,7 @@ export type BoardContext = {
   selectedBoard: Board | undefined;
   setSelectedBoard: (value: Board) => void;
   addBoard: (name: string, columns: Column[]) => void;
-  updateBoard: (id: string) => void;
+  updateBoard: (id: string, boardName: string, columns: Column[]) => void;
   removeBoard: (id: string) => void;
   addColumn: (name: string) => void;
   removeColumn: (id: string) => void;

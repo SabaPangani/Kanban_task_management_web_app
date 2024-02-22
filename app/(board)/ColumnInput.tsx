@@ -38,7 +38,7 @@ export default function ColumnInput({ value, onChange }: ColumnInputProps) {
         className="input"
         onChange={handleChange}
         onBlur={handleBlur}
-        value={value}
+        defaultValue={value}
         placeholder="e.g. Todo"
         required
         ref={inputRef}

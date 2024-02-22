@@ -6,7 +6,6 @@ import { signOut, useSession } from "next-auth/react";
 export default function Navbar() {
   const { data: session, status } = useSession();
   const { selectedBoard } = useBoard()!;
-  console.log(session, status);
   return (
     <nav className="bg-white dark:bg-dark-gray border-b border-lines dark:border-gray flex flex-row items-center px-4">
       <div className="flex flex-row items-center gap-x-4">

@@ -3,6 +3,7 @@ import { LegacyRef, Ref, Reference, useEffect, useRef, useState } from "react";
 interface ColumnInputProps {
   type: string;
   placeholder: string;
+  value: string;
   onChange: (newValue: string) => void;
 }
 
@@ -10,6 +11,7 @@ export default function Input({
   type,
   placeholder,
   onChange,
+  value,
 }: ColumnInputProps) {
   const [isEmpty, setIsEmpty] = useState(false);
   const [touched, setTouched] = useState(false);

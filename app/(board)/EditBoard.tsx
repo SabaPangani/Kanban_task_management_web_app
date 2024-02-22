@@ -1,26 +1,46 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Column as ColumnType } from "@/shared/types/Board";
 import ColumnInput from "./ColumnInput";
 import { useBoard } from "@/hooks/useBoard";
 import { v4 as uuid } from "uuid";
 import Input from "@/components/Input";
 
-export default function CreateBoard({
+export default function EditBoard({
   setShowModal,
 }: {
   setShowModal: (value: boolean) => void;
-  showModal: boolean;
 }) {
   const [columns, setColumns] = useState<ColumnType[] | Array<ColumnType>>([]);
-  const { addBoard } = useBoard()!;
+  const { updateBoard, selectedBoard } = useBoard()!;
   const [boardName, setBoardName] = useState("");
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addBoard(boardName, columns);
+    updateBoard(selectedBoard?.id!, boardName, columns);
   };
+
+  const fetchColumns = async () => {
+    try {
+      const res = await fetch("api/column");
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch columns");
+      }
+      const json = await res.json();
+      setColumns(
+        json.result.filter((col: any) => col.boardId === selectedBoard?.id)
+      );
+      console.log(selectedBoard?.name);
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchColumns();
+  }, [selectedBoard]);
   return (
     <>
       <div
@@ -44,7 +64,7 @@ export default function CreateBoard({
             onChange={(name) => {
               setBoardName(name);
             }}
-            value=""
+            value={selectedBoard?.name!}
           />
 
           <div className="flex flex-col mt-4">
@@ -83,7 +103,7 @@ export default function CreateBoard({
             </button>
           </div>
           <button className="btn-primary-s w-full mt-4 h-[38px]" type="submit">
-            Create New Board
+            Save Changes
           </button>
         </form>
       </div>

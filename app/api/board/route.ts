@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/route";
+import { Column } from "@/shared/types/Board";
 
 export async function POST(req: Request) {
   try {
@@ -26,7 +27,37 @@ export async function GET() {
     return NextResponse.json({ message: err.message }, { status: 400 });
   }
 }
+export async function PUT(req: Request) {
+  try {
+    const { boardId, columns, boardName } = await req.json();
+    const result = await prisma.board.updateMany({
+      where: { id: { equals: boardId } },
+      data: { name: boardName },
+    });
 
-export async function UPDATE(req: Request) {}
+    const updatedColumns = await Promise.all(
+      columns.map(async (column: any) => {
+        return await prisma.column.upsert({
+          where: {
+            id: column.id,
+          },
+          update: {
+            name: column.name,
+            tasks: column.tasks,
+          },
+          create: {
+            ...column,
+            boardId,
+          },
+        });
+      })
+    );
+    console.log(updatedColumns);
+
+    return NextResponse.json({ result, updatedColumns }, { status: 200 });
+  } catch (err: any) {
+    return NextResponse.json({ message: err.message }, { status: 400 });
+  }
+}
 
 export async function DELETE(req: Request) {}
