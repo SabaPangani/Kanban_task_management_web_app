@@ -1,5 +1,6 @@
 "use client";
 
+import Remove from "@/components/svgs/Remove";
 import { useBoard } from "@/hooks/useBoard";
 import { signOut, useSession } from "next-auth/react";
 

@@ -110,9 +110,26 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error(err.message);
     }
   };
-  const addColumn = (name: string) => {};
-  const removeColumn = (id: string) => {};
-  const addTask = (title: string, desc: string, subTasks: Subtask[]) => {
+  const addColumn = async (name: string) => {};
+  const removeColumn = async (id: string) => {
+    try {
+      const res = await fetch("api/column", {
+        headers: { "Content-Type": "application/json" },
+        method: "DELETE",
+        body: JSON.stringify({id}),
+      });
+
+      const json = await res.json();
+      console.log(json);
+      if (!res.ok) {
+        throw new Error("Failed to delete column");
+      }
+      fetchColumns();
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+  const addTask = async (title: string, desc: string, subTasks: Subtask[]) => {
     const newTask: Task = {
       id: uuid().toString(),
       title,
@@ -122,8 +139,8 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     };
     setTasks((prev) => [...prev, newTask]);
   };
-  const removeTask = (id: string) => {};
-  const updateTask = (id: string) => {};
+  const removeTask = async (id: string) => {};
+  const updateTask = async (id: string) => {};
 
   return (
     <BoardContext.Provider

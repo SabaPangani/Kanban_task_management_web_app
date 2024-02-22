@@ -1,3 +1,4 @@
+import Remove from "@/components/svgs/Remove";
 import { LegacyRef, Ref, Reference, useEffect, useRef, useState } from "react";
 
 interface ColumnInputProps {
@@ -27,15 +28,15 @@ export default function ColumnInput({ value, onChange }: ColumnInputProps) {
   };
 
   useEffect(() => {
-    isEmpty ? inputRef.current!.style.border = "1px solid #EA5555" : inputRef.current!.style.border = "1px solid #828FA340";
-      
-    
+    isEmpty
+      ? (inputRef.current!.style.border = "1px solid #EA5555")
+      : (inputRef.current!.style.border = "1px solid #828FA340");
   }, [touched, inputRef.current?.value]);
   return (
     <div className="relative">
       <input
         type="text"
-        className="input"
+        className="input w-[320px]"
         onChange={handleChange}
         onBlur={handleBlur}
         defaultValue={value}

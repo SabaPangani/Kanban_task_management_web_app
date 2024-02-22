@@ -6,14 +6,21 @@ import ColumnInput from "./ColumnInput";
 import { useBoard } from "@/hooks/useBoard";
 import { v4 as uuid } from "uuid";
 import Input from "@/components/Input";
+import Remove from "@/components/svgs/Remove";
 
 export default function EditBoard({
   setShowModal,
 }: {
   setShowModal: (value: boolean) => void;
 }) {
-  const { updateBoard, selectedBoard, fetchColumns, columns, setColumns } =
-    useBoard()!;
+  const {
+    updateBoard,
+    selectedBoard,
+    fetchColumns,
+    columns,
+    setColumns,
+    removeColumn,
+  } = useBoard()!;
   const [boardName, setBoardName] = useState("");
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -56,7 +63,10 @@ export default function EditBoard({
             </label>
             <ul className="flex flex-col gap-y-3">
               {columns.map((column: Column, index: number) => (
-                <li key={column.id}>
+                <li
+                  key={column.id}
+                  className="flex flex-row items-center gap-x-2"
+                >
                   <ColumnInput
                     value={column.name}
                     onChange={(newValue: string) => {
@@ -68,6 +78,14 @@ export default function EditBoard({
                       setColumns(updatedColumns);
                     }}
                   />
+                  <div
+                    onClick={() => {
+                      console.log("clicked")
+                      removeColumn(column.id);
+                    }}
+                  >
+                    <Remove />
+                  </div>
                 </li>
               ))}
             </ul>

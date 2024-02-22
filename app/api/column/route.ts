@@ -11,3 +11,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: err.message }, { status: 400 });
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const { id } = await req.json();
+    const result = await prisma.column.delete({ where: { id } });
+
+    return NextResponse.json({ result }, { status: 200 });
+  } catch (err: any) {
+    return NextResponse.json({ message: err.message }, { status: 400 });
+  }
+}
