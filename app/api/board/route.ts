@@ -60,4 +60,16 @@ export async function PUT(req: Request) {
   }
 }
 
-export async function DELETE(req: Request) {}
+export async function DELETE(req: Request) {
+  try {
+    const { id } = await req.json();
+    console.log(id)
+    await prisma.column.deleteMany({ where: { boardId: id } });
+
+    const result = await prisma.board.delete({ where: { id } });
+
+    return NextResponse.json({ result }, { status: 200 });
+  } catch (err: any) {
+    return NextResponse.json({ message: err.message }, { status: 400 });
+  }
+}

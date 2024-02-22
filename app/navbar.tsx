@@ -3,10 +3,14 @@
 import Remove from "@/components/svgs/Remove";
 import { useBoard } from "@/hooks/useBoard";
 import { signOut, useSession } from "next-auth/react";
+import BoardPanel from "./(board)/BoardPanel";
+import { useState } from "react";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const { selectedBoard } = useBoard()!;
+
+  const [showPanel, setShowPanel] = useState(false);
   return (
     <nav className="bg-white dark:bg-dark-gray border-b border-lines dark:border-gray flex flex-row items-center px-4">
       <div className="flex flex-row items-center gap-x-4">
@@ -38,11 +42,18 @@ export default function Navbar() {
           >
             + Add New Task
           </button>
-          <span className="flex flex-col gap-y-[3.5px] cursor-pointer hover:gap-y-[5px] transition-all">
+          <div
+            className="flex flex-col gap-y-[3.5px] cursor-pointer transition-all"
+            onClick={() => {
+              console.log(showPanel);
+              setShowPanel((prev) => !prev);
+            }}
+          >
             <span className="w-[4px] h-[4px] bg-medium-gray rounded"></span>
             <span className="w-[4px] h-[4px] bg-medium-gray rounded"></span>
             <span className="w-[4px] h-[4px] bg-medium-gray rounded"></span>
-          </span>
+          </div>
+          {showPanel == true && <BoardPanel />}
         </div>
       </div>
     </nav>

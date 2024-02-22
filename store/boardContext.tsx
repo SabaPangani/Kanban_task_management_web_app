@@ -94,7 +94,27 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error("Error updating board:", err.message);
     }
   };
-  const removeBoard = (id: string) => {};
+  const removeBoard = async (id: string) => {
+    try {
+      const res = await fetch("api/board", {
+        headers: { "Content-Type": "application/json" },
+        method: "DELETE",
+        body: JSON.stringify({ id }),
+      });
+
+      const json = await res.json();
+      console.log(json);
+
+      setBoards((prev: Board[]) => prev.filter((board) => board.id !== id));
+      if (!res.ok) {
+        throw new Error("Failed to delete board");
+      }
+      setSelectedBoard(boards[0]);
+      setRefetchBoard(true);
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
   const fetchColumns = async () => {
     try {
       const res = await fetch("api/column");
@@ -116,7 +136,7 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
       const res = await fetch("api/column", {
         headers: { "Content-Type": "application/json" },
         method: "DELETE",
-        body: JSON.stringify({id}),
+        body: JSON.stringify({ id }),
       });
 
       const json = await res.json();
