@@ -3,11 +3,14 @@ import { Subtask, Task } from "./Task";
 
 export type BoardContext = {
   boards: Board[];
+  columns: Column[];
+  setColumns: (cols: any) => void;
   selectedBoard: Board | undefined;
   setSelectedBoard: (value: Board) => void;
   addBoard: (name: string, columns: Column[]) => void;
   updateBoard: (id: string, boardName: string, columns: Column[]) => void;
   removeBoard: (id: string) => void;
+  fetchColumns: () => void;
   addColumn: (name: string) => void;
   removeColumn: (id: string) => void;
   addTask: (title: string, desc: string, subTasks: Subtask[]) => void;

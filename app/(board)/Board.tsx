@@ -7,12 +7,12 @@ import Column from "./Column";
 import EditBoard from "./EditBoard";
 
 export default function Board() {
-  const { selectedBoard } = useBoard()!;
+  const { selectedBoard, fetchColumns } = useBoard()!;
+  const [showEditBoardModal, setShowEditBoardModal] = useState(false);
   const [columns, setColumns] = useState<ColumnType[]>([]);
-  const [showEditBoardModal, setshowEditBoardModal] = useState(false);
 
   useEffect(() => {
-    const fetchColumns = async () => {
+    const fetchCols = async () => {
       try {
         const res = await fetch("api/column");
 
@@ -27,7 +27,7 @@ export default function Board() {
         console.error(err.message);
       }
     };
-    fetchColumns();
+    fetchCols();
   }, [selectedBoard]);
   return (
     <>
@@ -37,7 +37,7 @@ export default function Board() {
           <p className="text-medium-gray font-semibold">
             This board is empty. Create a new column to get started.
           </p>
-          <button className="btn-primary max-w-[174px] w-full">
+          <button className="btn-primary max-w-[174px] w-full" type="button">
             + Add New Column
           </button>
         </div>
@@ -52,14 +52,14 @@ export default function Board() {
             <div
               className="bg-gray bg-opacity-10 max-w-[280px] h-[1014px] mt-[75px] w-full flex items-center justify-center rounded-md cursor-pointer text-medium-gray font-bold text-2xl hover:text-purple transition-all"
               onClick={() => {
-                setshowEditBoardModal(true);
+                setShowEditBoardModal(true);
               }}
             >
               + New Column
             </div>
           </ul>
           {showEditBoardModal && (
-            <EditBoard setShowModal={setshowEditBoardModal} />
+            <EditBoard setShowModal={setShowEditBoardModal} />
           )}
         </>
       )}

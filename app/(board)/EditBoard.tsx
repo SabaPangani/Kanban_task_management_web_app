@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { Column as ColumnType } from "@/shared/types/Board";
+import { Column } from "@/shared/types/Board";
 import ColumnInput from "./ColumnInput";
 import { useBoard } from "@/hooks/useBoard";
 import { v4 as uuid } from "uuid";
@@ -12,30 +12,13 @@ export default function EditBoard({
 }: {
   setShowModal: (value: boolean) => void;
 }) {
-  const [columns, setColumns] = useState<ColumnType[] | Array<ColumnType>>([]);
-  const { updateBoard, selectedBoard } = useBoard()!;
+  const { updateBoard, selectedBoard, fetchColumns, columns, setColumns } =
+    useBoard()!;
   const [boardName, setBoardName] = useState("");
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     updateBoard(selectedBoard?.id!, boardName, columns);
-  };
-
-  const fetchColumns = async () => {
-    try {
-      const res = await fetch("api/column");
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch columns");
-      }
-      const json = await res.json();
-      setColumns(
-        json.result.filter((col: any) => col.boardId === selectedBoard?.id)
-      );
-      console.log(selectedBoard?.name);
-    } catch (err: any) {
-      console.error(err.message);
-    }
   };
 
   useEffect(() => {
@@ -72,7 +55,7 @@ export default function EditBoard({
               Board Columns
             </label>
             <ul className="flex flex-col gap-y-3">
-              {columns.map((column: ColumnType, index: number) => (
+              {columns.map((column: Column, index: number) => (
                 <li key={column.id}>
                   <ColumnInput
                     value={column.name}
@@ -94,7 +77,11 @@ export default function EditBoard({
               onClick={() => {
                 setColumns((prev: any) => [
                   ...prev,
-                  { id: uuid(), name: "", tasks: { create: [] } },
+                  {
+                    id: uuid(),
+                    name: "",
+                    tasks: { create: [] },
+                  },
                 ]);
               }}
               disabled={columns.length >= 7}

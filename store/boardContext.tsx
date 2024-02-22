@@ -15,7 +15,7 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
   const [boards, setBoards] = React.useState<Board[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [tasks, setTasks] = React.useState<Task[]>([]);
-  const [columns, setColumns] = React.useState([]);
+  const [columns, setColumns] = React.useState<any>([]);
   const [refetchBoard, setRefetchBoard] = React.useState(false);
   const [selectedBoard, setSelectedBoard] = React.useState<Board>();
   React.useEffect(() => {
@@ -95,6 +95,21 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
   const removeBoard = (id: string) => {};
+  const fetchColumns = async () => {
+    try {
+      const res = await fetch("api/column");
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch columns");
+      }
+      const json = await res.json();
+      setColumns(
+        json.result.filter((col: any) => col.boardId === selectedBoard?.id)
+      );
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
   const addColumn = (name: string) => {};
   const removeColumn = (id: string) => {};
   const addTask = (title: string, desc: string, subTasks: Subtask[]) => {
@@ -114,11 +129,14 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     <BoardContext.Provider
       value={{
         boards,
+        columns,
+        setColumns,
         selectedBoard,
         setSelectedBoard,
         addBoard,
         updateBoard,
         removeBoard,
+        fetchColumns,
         addColumn,
         removeColumn,
         // tasks,
