@@ -16,9 +16,11 @@ export default function Input({
   const [isEmpty, setIsEmpty] = useState(false);
   const [touched, setTouched] = useState(false);
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     onChange(e.target.value);
     if (!touched) {
       setTouched(true);
@@ -40,15 +42,35 @@ export default function Input({
   }, [touched, inputRef.current?.value]);
   return (
     <div className="relative">
-      <input
-        type={type}
-        className="input"
-        onChange={handleChange}
-        onBlur={handleBlur}
-        placeholder={placeholder}
-        required
-        ref={inputRef}
-      />
+      {type == "textarea" ? (
+        <>
+          <textarea
+            className="input h-[135px] pt-2 resize-none"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            defaultValue={value}
+            placeholder={placeholder}
+            required
+            ref={inputRef as React.RefObject<HTMLTextAreaElement>}
+          />
+          {touched && isEmpty && type === "textarea" && (
+            <span className="text-red text-xs absolute right-5 top-1/2 -translate-y-1/2 tracking-wider">
+              Can't be empty
+            </span>
+          )}
+        </>
+      ) : (
+        <input
+          type={type}
+          className="input"
+          onChange={handleChange}
+          onBlur={handleBlur}
+          defaultValue={value}
+          placeholder={placeholder}
+          required
+          ref={inputRef as React.RefObject<HTMLInputElement>}
+        />
+      )}
       {touched && isEmpty && (
         <span className="text-red text-xs absolute right-5 top-1/2 -translate-y-1/2 tracking-wider">
           Can't be empty

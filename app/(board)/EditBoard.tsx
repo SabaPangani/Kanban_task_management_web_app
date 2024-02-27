@@ -8,11 +8,7 @@ import { v4 as uuid } from "uuid";
 import Input from "@/components/Input";
 import Remove from "@/components/svgs/Remove";
 
-export default function EditBoard({
-  setShowModal,
-}: {
-  setShowModal: (value: boolean) => void;
-}) {
+export default function EditBoard({}) {
   const {
     updateBoard,
     selectedBoard,
@@ -20,6 +16,7 @@ export default function EditBoard({
     columns,
     setColumns,
     removeColumn,
+    setShowEditBoard,
   } = useBoard()!;
   const [boardName, setBoardName] = useState("");
 
@@ -36,7 +33,7 @@ export default function EditBoard({
       <div
         className="w-screen h-screen z-10 absolute left-0 top-0 bg-black opacity-50"
         onClick={() => {
-          setShowModal(false);
+          setShowEditBoard(false);
         }}
       ></div>
       <div className="z-20 bg-white dark:bg-dark-gray rounded-md px-8 py-7 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all">
@@ -80,7 +77,7 @@ export default function EditBoard({
                   />
                   <div
                     onClick={() => {
-                      console.log("clicked")
+                      console.log("clicked");
                       removeColumn(column.id);
                     }}
                   >

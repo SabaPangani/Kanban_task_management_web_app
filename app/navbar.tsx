@@ -1,14 +1,12 @@
 "use client";
 
-import Remove from "@/components/svgs/Remove";
 import { useBoard } from "@/hooks/useBoard";
 import { signOut, useSession } from "next-auth/react";
 import BoardPanel from "./(board)/BoardPanel";
 import { useState } from "react";
 
 export default function Navbar() {
-  const { data: session, status } = useSession();
-  const { selectedBoard } = useBoard()!;
+  const { selectedBoard, setShowCreateTask } = useBoard()!;
 
   const [showPanel, setShowPanel] = useState(false);
   return (
@@ -38,14 +36,16 @@ export default function Navbar() {
         <div className="flex flex-row items-center gap-x-5">
           <button
             className="btn-primary w-[150px] text-sm h-[43px] disabled:opacity-30 disabled:hover:bg-purple"
-            disabled
+            disabled={!selectedBoard}
+            onClick={() => {
+              setShowCreateTask(true);
+            }}
           >
             + Add New Task
           </button>
           <div
             className="flex flex-col gap-y-[3.5px] cursor-pointer transition-all"
             onClick={() => {
-              console.log(showPanel);
               setShowPanel((prev) => !prev);
             }}
           >

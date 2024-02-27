@@ -7,14 +7,9 @@ import { useBoard } from "@/hooks/useBoard";
 import { v4 as uuid } from "uuid";
 import Input from "@/components/Input";
 
-export default function CreateBoard({
-  setShowModal,
-}: {
-  setShowModal: (value: boolean) => void;
-  showModal: boolean;
-}) {
+export default function CreateBoard({}) {
   const [columns, setColumns] = useState<ColumnType[] | Array<ColumnType>>([]);
-  const { addBoard } = useBoard()!;
+  const { addBoard, setShowCreateBoard } = useBoard()!;
   const [boardName, setBoardName] = useState("");
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -26,7 +21,7 @@ export default function CreateBoard({
       <div
         className="w-screen h-screen z-10 absolute left-0 top-0 bg-black opacity-50"
         onClick={() => {
-          setShowModal(false);
+          setShowCreateBoard(false);
         }}
       ></div>
       <div className="z-20 bg-white dark:bg-dark-gray rounded-md px-8 py-7 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all">

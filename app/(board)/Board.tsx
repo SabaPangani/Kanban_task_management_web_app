@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Column as ColumnType } from "@/shared/types/Board";
+import { Board, Column as ColumnType } from "@/shared/types/Board";
 import { useBoard } from "@/hooks/useBoard";
 import Column from "./Column";
 import EditBoard from "./EditBoard";
+import CreateTask from "./CreateTask";
 
 export default function Board() {
-  const { selectedBoard, fetchColumns } = useBoard()!;
-  const [showEditBoardModal, setShowEditBoardModal] = useState(false);
+  const { selectedBoard, fetchColumns, setShowEditBoard, setSelectedBoard } =
+    useBoard()!;
   const [columns, setColumns] = useState<ColumnType[]>([]);
 
   useEffect(() => {
@@ -23,6 +24,17 @@ export default function Board() {
         setColumns(
           json.result.filter((col: any) => col.boardId === selectedBoard?.id)
         );
+        if (selectedBoard) {
+          const filteredColumns = columns.filter(
+            (col: ColumnType) => col.boardId === selectedBoard?.id
+          );
+
+          const updatedBoard: Board = {
+            ...selectedBoard!,
+            columns: filteredColumns!,
+          };
+          setSelectedBoard(updatedBoard);
+        }
       } catch (err: any) {
         console.error(err.message);
       }
@@ -52,15 +64,12 @@ export default function Board() {
             <div
               className="bg-gray bg-opacity-10 max-w-[280px] h-[1014px] mt-[75px] w-full flex items-center justify-center rounded-md cursor-pointer text-medium-gray font-bold text-2xl hover:text-purple transition-all"
               onClick={() => {
-                setShowEditBoardModal(true);
+                setShowEditBoard(true);
               }}
             >
               + New Column
             </div>
           </ul>
-          {showEditBoardModal && (
-            <EditBoard setShowModal={setShowEditBoardModal} />
-          )}
         </>
       )}
     </>

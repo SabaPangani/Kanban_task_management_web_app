@@ -8,22 +8,23 @@ import { useState } from "react";
 import CreateBoard from "./(board)/CreateBoard";
 import { useBoard } from "@/hooks/useBoard";
 import { Board } from "@/shared/types/Board";
+
 export default function Sidebar() {
   const [isHidden, setIsHiddden] = useState(false);
   const [showCreateBoardModal, setShowCreateBoardModal] = useState(false);
   const { boards, setSelectedBoard } = useBoard()!;
+
   return (
     <>
       <div
         className={`bg-white dark:bg-dark-gray w-[300px] h-full flex flex-col justify-between absolute ${
           isHidden ? "-left-[100%]" : "left-0"
         } top-[75px] p-5 border border-lines dark:border-gray dark:border-t-transparent border-t-transparent transition-all`}
-      >
+      > 
         <div>
           <h4 className="tracking-[2.4px] font-bold text-medium-gray text-xs mb-8 mt-2">
             ALL BOARDS ({boards.length})
           </h4>
-
           <ul className="flex flex-col gap-y-5">
             {boards.map((board: Board) => (
               <li

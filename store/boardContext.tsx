@@ -2,7 +2,7 @@
 
 import { Board, Column } from "@/shared/types/Board";
 import { BoardContext as BoardContextType } from "@/shared/types/BoardContext";
-import { Subtask, Task } from "@/shared/types/Task";
+import { Status, Subtask, Task } from "@/shared/types/Task";
 import { v4 as uuid } from "uuid";
 import * as React from "react";
 import { useSession } from "next-auth/react";
@@ -18,6 +18,9 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
   const [columns, setColumns] = React.useState<any>([]);
   const [refetchBoard, setRefetchBoard] = React.useState(false);
   const [selectedBoard, setSelectedBoard] = React.useState<Board>();
+  const [showEditBoard, setShowEditBoard] = React.useState(false);
+  const [showCreateBoard, setShowCreateBoard] = React.useState(false);
+  const [showCreateTask, setShowCreateTask] = React.useState(false);
   React.useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -40,7 +43,11 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     };
 
-    fetchData();
+    if (!localStorage.getItem("boards")) {
+      fetchData();
+    } else {
+      setBoards(JSON.parse(localStorage.getItem("boards")!));
+    }
     setRefetchBoard(false);
   }, [refetchBoard == true]);
   const addBoard = async (name: string, columns: Column[]) => {
@@ -149,15 +156,37 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error(err.message);
     }
   };
-  const addTask = async (title: string, desc: string, subTasks: Subtask[]) => {
-    const newTask: Task = {
+  const addTask = async (
+    title: string,
+    desc: string,
+    subTasks: Subtask[],
+    status: Status,
+    colId: string
+  ) => {
+    const newTask = {
       id: uuid().toString(),
       title,
       description: desc,
-      subTasks,
-      status: "Todo",
+      subTasks: { create: subTasks },
+      status,
     };
-    setTasks((prev) => [...prev, newTask]);
+
+    try {
+      const res = await fetch("/api/task", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ newTask, columnId: colId }),
+      });
+
+      const json = await res.json();
+      console.log(json);
+      if (!res.ok) {
+        throw new Error("failed to create board", json.message);
+      }
+      console.log(json);
+    } catch (error: any) {
+      console.error(error.message);
+    }
   };
   const removeTask = async (id: string) => {};
   const updateTask = async (id: string) => {};
@@ -165,6 +194,12 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <BoardContext.Provider
       value={{
+        showCreateTask,
+        setShowCreateTask,
+        showEditBoard,
+        showCreateBoard,
+        setShowCreateBoard,
+        setShowEditBoard,
         boards,
         columns,
         setColumns,
@@ -176,7 +211,6 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
         fetchColumns,
         addColumn,
         removeColumn,
-        // tasks,
         addTask,
         updateTask,
         removeTask,

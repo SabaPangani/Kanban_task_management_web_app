@@ -63,8 +63,8 @@ model Column {
   id      String @id @default(cuid())
   name    String
   tasks   Task[]
-  board   Board?  @relation(fields: [boardId], references: [id])
-  boardId String 
+  board   Board? @relation(fields: [boardId], references: [id])
+  boardId String
 }
 
 model Task {
@@ -78,9 +78,11 @@ model Task {
 }
 
 model SubTask {
-  id     String @id @default(cuid())
-  task   Task   @relation(fields: [taskId], references: [id])
-  taskId String
+  id      String  @id @default(cuid())
+  name    String
+  checked Boolean
+  task    Task    @relation(fields: [taskId], references: [id])
+  taskId  String
 }
 
 model VerificationToken {

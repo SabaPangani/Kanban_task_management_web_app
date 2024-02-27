@@ -9,6 +9,7 @@ export interface Task {
 export type Status = "Todo" | "Doing" | "Done";
 
 export interface Subtask {
+  name: string;
   checked: boolean;
   description: string;
 }
