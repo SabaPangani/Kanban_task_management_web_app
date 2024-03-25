@@ -21,33 +21,35 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
   const [showEditBoard, setShowEditBoard] = React.useState(false);
   const [showCreateBoard, setShowCreateBoard] = React.useState(false);
   const [showCreateTask, setShowCreateTask] = React.useState(false);
-  React.useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const res = await fetch("/api/board");
 
-        if (!res.ok) {
-          throw new Error(`Failed to fetch links ${res.status}`);
-        }
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/board");
 
-        const { result } = await res.json();
-
-        localStorage.setItem("boards", JSON.stringify(result));
-        setBoards(result);
-        console.log(result, boards);
-      } catch (err: any) {
-        console.error("Error fetching links:", err.message);
-      } finally {
-        setIsLoading(false);
+      if (!res.ok) {
+        throw new Error(`Failed to fetch links ${res.status}`);
       }
-    };
 
+      const { result } = await res.json();
+
+      localStorage.setItem("boards", JSON.stringify(result));
+      setBoards(result);
+      console.log(result, boards);
+    } catch (err: any) {
+      console.error("Error fetching links:", err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
     if (!localStorage.getItem("boards")) {
       fetchData();
     } else {
       setBoards(JSON.parse(localStorage.getItem("boards")!));
     }
+
     setRefetchBoard(false);
   }, [refetchBoard == true]);
   const addBoard = async (name: string, columns: Column[]) => {
@@ -81,6 +83,7 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     columns: Column[]
   ) => {
     try {
+      console.log(columns)
       const res = await fetch("/api/board", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -96,7 +99,7 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
         console.log(json);
         throw new Error("failed to update board", json.message);
       }
-      setRefetchBoard(true);
+      fetchData();
     } catch (err: any) {
       console.error("Error updating board:", err.message);
     }
@@ -133,6 +136,9 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
       setColumns(
         json.result.filter((col: any) => col.boardId === selectedBoard?.id)
       );
+      if (columns.length > 0) {
+        localStorage.setItem("cols", JSON.stringify(columns));
+      }
     } catch (err: any) {
       console.error(err.message);
     }
@@ -183,7 +189,7 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
       if (!res.ok) {
         throw new Error("failed to create board", json.message);
       }
-      console.log(json);
+      console.log(json, "created");
     } catch (error: any) {
       console.error(error.message);
     }

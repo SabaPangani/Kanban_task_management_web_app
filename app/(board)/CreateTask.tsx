@@ -1,26 +1,32 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { Column as ColumnType } from "@/shared/types/Board";
-import ColumnInput from "./ColumnInput";
+import { FormEvent, useEffect, useState } from "react";
 import { useBoard } from "@/hooks/useBoard";
 import { v4 as uuid } from "uuid";
 import Input from "@/components/Input";
 import Status from "@/components/Status";
 import { Status as StatusType, Subtask } from "@/shared/types/Task";
+import { Column } from "@/shared/types/Board";
 
 export default function CreateTask({}) {
   const [subtasks, setSubtasks] = useState<Subtask[] | Array<Subtask>>([]);
-  const { addTask, setShowCreateTask, selectedBoard } = useBoard()!;
+  const { addTask, setShowCreateTask, selectedBoard, columns } = useBoard()!;
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [status, setStatus] = useState<StatusType>("Doing");
 
+  useEffect(() => {
+    console.log(columns);
+  }, []);
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(selectedBoard);
-    addTask(title, desc, subtasks, status!, selectedBoard?.columns[0].id!);
+    const cols: Column[] = columns.filter(
+      (column) => column.boardId == selectedBoard?.id
+    );
+    console.log(cols);
+    addTask(title, desc, subtasks, status!, cols[0].id!);
   };
   return (
     <>

@@ -35,6 +35,7 @@ export default function Sidebar() {
                   );
                   setSelectedBoard(selectedBoard as Board);
                 }}
+                key={board.id}
               >
                 <BoardLogo />
                 <span className="font-bold text-medium-gray text-sm">

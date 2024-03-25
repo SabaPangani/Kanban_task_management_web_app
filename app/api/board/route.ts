@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { Column } from "@/shared/types/Board";
+import { Board, Column } from "@/shared/types/Board";
 
 export async function POST(req: Request) {
   try {
@@ -63,7 +63,7 @@ export async function PUT(req: Request) {
 export async function DELETE(req: Request) {
   try {
     const { id } = await req.json();
-    console.log(id)
+    console.log(id);
     await prisma.column.deleteMany({ where: { boardId: id } });
 
     const result = await prisma.board.delete({ where: { id } });

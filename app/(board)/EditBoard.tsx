@@ -19,14 +19,17 @@ export default function EditBoard({}) {
     setShowEditBoard,
   } = useBoard()!;
   const [boardName, setBoardName] = useState("");
-
+  const [tmpCols, setTmpCols] = useState(columns as any);
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    updateBoard(selectedBoard?.id!, boardName, columns);
+    setColumns(tmpCols);
+    updateBoard(selectedBoard?.id!, boardName, tmpCols);
   };
 
   useEffect(() => {
     fetchColumns();
+    setBoardName(selectedBoard?.name!)
+    console.log(tmpCols, columns);
   }, [selectedBoard]);
   return (
     <>
@@ -59,7 +62,7 @@ export default function EditBoard({}) {
               Board Columns
             </label>
             <ul className="flex flex-col gap-y-3">
-              {columns.map((column: Column, index: number) => (
+              {tmpCols?.map((column: Column, index: number) => (
                 <li
                   key={column.id}
                   className="flex flex-row items-center gap-x-2"
@@ -67,18 +70,21 @@ export default function EditBoard({}) {
                   <ColumnInput
                     value={column.name}
                     onChange={(newValue: string) => {
-                      const updatedColumns = [...columns];
+                      const updatedColumns = [...tmpCols];
                       updatedColumns[index] = {
                         ...updatedColumns[index],
                         name: newValue,
                       };
-                      setColumns(updatedColumns);
+                      setTmpCols(updatedColumns);
                     }}
                   />
                   <div
                     onClick={() => {
                       console.log("clicked");
                       removeColumn(column.id);
+                      setTmpCols((prev: any) => {
+                        return prev.filter((col: any) => col.id !== column.id);
+                      });
                     }}
                   >
                     <Remove />
@@ -90,7 +96,7 @@ export default function EditBoard({}) {
               className="btn-secondary w-full mt-3 h-[38px] disabled:opacity-20"
               type="button"
               onClick={() => {
-                setColumns((prev: any) => [
+                setTmpCols((prev: any) => [
                   ...prev,
                   {
                     id: uuid(),
