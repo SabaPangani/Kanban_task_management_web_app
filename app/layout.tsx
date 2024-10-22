@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import Sidebar from "@/components/Sidebar";
 
-const plusJakartaSans = localFont({
-  src: "./fonts/PlusJakartaSans.woff2",
-  variable: "--font-plus-jakarta-sans",
-  weight: "100 900", 
-});
+const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,7 +17,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${plusJakartaSans.variable} antialiased`}>
+      <body className={`${plusJakartaSans.className} antialiased bg-background-light`}>
+        <Sidebar />
         {children}
       </body>
     </html>
