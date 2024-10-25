@@ -10,7 +10,7 @@ export default function Sidebar() {
   return (
     <>
       {showSidebar ? (
-        <aside className="bg-white absolute left-0 top-0 h-screen w-full max-w-[300px] pl-10 pr-16 py-10 flex flex-col justify-between items-start gap-y-16">
+        <aside className="bg-white h-screen w-full max-w-[300px] pl-10 pr-16 py-10 flex flex-col justify-between items-start gap-y-16 col-span-1">
           <div className="flex flex-col gap-y-16">
             {" "}
             <header className="flex justify-start items-center w-full gap-x-5">
