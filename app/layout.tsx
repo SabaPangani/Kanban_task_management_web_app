@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import { Providers } from "./Providers";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -21,8 +22,10 @@ export default function RootLayout({
       <body
         className={`${plusJakartaSans.className} antialiased bg-background-light`}
       >
-
-        {children}
+        <Providers>
+          {children}
+          <div id="modal-root" />
+        </Providers>
       </body>
     </html>
   );

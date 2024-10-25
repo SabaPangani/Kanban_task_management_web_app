@@ -4,9 +4,12 @@ import board from "./svgs/board.svg";
 import newBoard from "./svgs/newBoard.svg";
 import eye from "./svgs/eye.svg";
 import eye2 from "./svgs/eye2.svg";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { ModalType } from "@/lib/types";
+import { ModalWindow } from "@/app/Providers";
 export default function Sidebar() {
   const [showSidebar, setShowSidebar] = useState(true);
+  const { setOpenModal } = useContext(ModalWindow) as ModalType;
   return (
     <>
       {showSidebar ? (
@@ -38,7 +41,12 @@ export default function Sidebar() {
                   <p>Roadmap</p>
                 </div>
               </div>
-              <div className="flex gap-x-5 font-bold mt-5">
+              <div
+                className="flex gap-x-5 font-bold mt-5"
+                onClick={() => {
+                  setOpenModal(true);
+                }}
+              >
                 <Image src={newBoard} alt="Board logo" />
                 <p className="text-primary">+ Create New Board</p>
               </div>
@@ -57,7 +65,7 @@ export default function Sidebar() {
         </aside>
       ) : (
         <div
-          className="absolute left-0 bottom-20 bg-primary rounded-r-full p-5 pr-7 cursor-pointer"
+          className="bg-primary rounded-r-full p-5 pr-7 cursor-pointer col-span-1 w-20 h-16 self-end mb-16 flex justify-center items-center"
           onClick={() => {
             setShowSidebar(true);
           }}
