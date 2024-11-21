@@ -15,13 +15,12 @@ const Button = ({
   variant: ButtonVariant;
 }) => {
   const baseStyles =
-    "rounded-full font-bold transition-all max-w-[255px] w-full";
+    "rounded-full font-bold transition-all w-full";
 
   const sizeStyles: Record<ButtonSize, string> = {
     L: "py-3 px-6 text-sm",
     S: "py-2 px-5 text-xs",
   };
-
   const variantStyles: Record<ButtonVariant, string> = {
     primary: "bg-primary text-white hover:bg-primary-light",
     secondary:
