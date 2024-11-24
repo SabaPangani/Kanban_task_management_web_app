@@ -1,15 +1,17 @@
 "use client";
 import Image from "next/image";
-import board from "@/components/svgs/board.svg";
+import boardSvg from "@/components/svgs/board.svg";
 import newBoard from "@/components/svgs/newBoard.svg";
 import eye from "@/components/svgs/eye.svg";
 import eye2 from "@/components/svgs/eye2.svg";
 import { useContext, useState } from "react";
-import { ModalType } from "@/lib/types";
+import { Board, ModalType } from "@/lib/types";
 import { ModalWindow } from "@/app/Providers";
-export default function Sidebar() {
+
+export default function Sidebar({ data }: { data: Board[] }) {
   const [showSidebar, setShowSidebar] = useState(true);
   const { setOpenModal } = useContext(ModalWindow) as ModalType;
+
   return (
     <>
       {showSidebar ? (
@@ -22,12 +24,14 @@ export default function Sidebar() {
                 <span className="w-[6px] h-[25px] rounded-md bg-primary-light"></span>
                 <span className="w-[6px] h-[25px] rounded-md bg-[#a9a4ff9e]"></span>
               </div>
-              <h1 className="text-headingXL font-bold">kanban</h1>
+              <h1 className="text-headingXL font-bold text-neutral-dark">
+                kanban
+              </h1>
             </header>
             <section className="text-neutral-lightGray">
               <p className="font-bold text-headingS">ALL BOARDS (3)</p>
 
-              <div className="flex flex-col gap-y-5 mt-5">
+              {/* <div className="flex flex-col gap-y-5 mt-5">
                 <div className="flex gap-x-5 font-bold">
                   <Image src={board} alt="Board logo" />
                   <p>Platform launch</p>
@@ -40,7 +44,13 @@ export default function Sidebar() {
                   <Image src={board} alt="Board logo" />
                   <p>Roadmap</p>
                 </div>
-              </div>
+              </div> */}
+              {data?.map((board: Board) => (
+                <div className="flex gap-x-5 font-bold">
+                  <Image src={boardSvg} alt="Board svg" />
+                  <p>{board.name}</p>
+                </div>
+              ))}
               <div
                 className="flex gap-x-5 font-bold mt-5"
                 onClick={() => {

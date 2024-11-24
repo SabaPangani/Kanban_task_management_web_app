@@ -1,13 +1,16 @@
 "use client";
 import React, { useContext } from "react";
 import { ModalWindow } from "@/app/Providers";
-import { ModalType } from "@/lib/types";
+import { Board, ModalType } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
 import FormField from "../form/FormField";
 import { useFieldArray, useForm } from "react-hook-form";
 import FormSection from "../form/FormSection";
 import FormHeader from "../form/FormHeader";
+import del from "@/components/svgs/delete.svg";
+import Image from "next/image";
+import { createNewBoard } from "@/lib/actions";
 
 export default function ModalCreateBoard() {
   const { setOpenModal } = useContext(ModalWindow) as ModalType;
@@ -32,14 +35,28 @@ export default function ModalCreateBoard() {
   const addNewColumn = () => {
     append({ name: "" });
   };
+
+  const onFormSubmit = async (data: Board) => {
+    try {
+      await createNewBoard(data);
+    } catch (errors) {
+      console.error(errors);
+    }
+  };
+
   return (
-    <div
+    <form
       className="bg-white rounded-md px-8 py-6 w-full max-w-[480px] flex flex-col gap-y-3"
       onClick={(event: React.MouseEvent<HTMLElement>) =>
         event.stopPropagation()
       }
+      onSubmit={handleSubmit((data) => {
+        onFormSubmit(data);
+      })}
     >
-      <h1 className="text-headingL font-bold">Add New Board</h1>
+      <h1 className="text-headingL font-bold text-neutral-dark">
+        Add New Board
+      </h1>
 
       <FormSection>
         <FormHeader name="Name" />
@@ -48,7 +65,17 @@ export default function ModalCreateBoard() {
       <FormSection>
         {fields.length ? <FormHeader name="Columns" /> : ""}
         {fields.map((field: any, index: number) => (
-          <FormField />
+          <div className="flex items-center justify-between gap-x-5" key={index}>
+            <FormField />
+            <Image
+              className="cursor-pointer"
+              src={del}
+              alt="Delete icon"
+              onClick={() => {
+                remove(index);
+              }}
+            />
+          </div>
         ))}
       </FormSection>
       <div className="flex flex-col items-center gap-y-3">
@@ -62,6 +89,6 @@ export default function ModalCreateBoard() {
           Create New board
         </Button>
       </div>
-    </div>
+    </form>
   );
 }
