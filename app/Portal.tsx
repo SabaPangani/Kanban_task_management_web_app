@@ -18,15 +18,16 @@ export default function Portal({
 
   useEffect(() => {
     setMounted(true);
+    console.log(classes)
   }, []);
 
   return (
     <>
       {mounted
         ? createPortal(
-            <dialog className={classes} onClick={closePortal}>
+            <div className={classes} onClick={closePortal}>
               {children}
-            </dialog>,
+            </div>,
             element
           )
         : null}

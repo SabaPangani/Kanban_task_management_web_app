@@ -1,9 +1,9 @@
 "use client";
 import Image from "next/image";
-import board from "./svgs/board.svg";
-import newBoard from "./svgs/newBoard.svg";
-import eye from "./svgs/eye.svg";
-import eye2 from "./svgs/eye2.svg";
+import board from "@/components/svgs/board.svg";
+import newBoard from "@/components/svgs/newBoard.svg";
+import eye from "@/components/svgs/eye.svg";
+import eye2 from "@/components/svgs/eye2.svg";
 import { useContext, useState } from "react";
 import { ModalType } from "@/lib/types";
 import { ModalWindow } from "@/app/Providers";
@@ -48,7 +48,9 @@ export default function Sidebar() {
                 }}
               >
                 <Image src={newBoard} alt="Board logo" />
-                <p className="text-primary">+ Create New Board</p>
+                <p className="text-primary cursor-pointer">
+                  + Create New Board
+                </p>
               </div>
             </section>
           </div>
