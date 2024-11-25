@@ -12,8 +12,8 @@ export type ModalType = {
 };
 
 export type Board = {
-  name: string;
-  column: Column;
+  title: string;
+  columns: Column[];
 };
 export type Column = {
   name: string;

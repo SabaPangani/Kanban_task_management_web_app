@@ -38,6 +38,8 @@ export default function ModalCreateBoard() {
 
   const onFormSubmit = async (data: Board) => {
     try {
+      console.log(data);
+      
       await createNewBoard(data);
     } catch (errors) {
       console.error(errors);
@@ -60,13 +62,16 @@ export default function ModalCreateBoard() {
 
       <FormSection>
         <FormHeader name="Name" />
-        <FormField />
+        <FormField register={register} name="title" />
       </FormSection>
       <FormSection>
         {fields.length ? <FormHeader name="Columns" /> : ""}
         {fields.map((field: any, index: number) => (
-          <div className="flex items-center justify-between gap-x-5" key={index}>
-            <FormField />
+          <div
+            className="flex items-center justify-between gap-x-5"
+            key={index}
+          >
+            <FormField register={register} name="name" />
             <Image
               className="cursor-pointer"
               src={del}

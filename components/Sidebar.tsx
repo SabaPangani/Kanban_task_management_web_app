@@ -29,30 +29,20 @@ export default function Sidebar({ data }: { data: Board[] }) {
               </h1>
             </header>
             <section className="text-neutral-lightGray">
-              <p className="font-bold text-headingS">ALL BOARDS (3)</p>
+              <p className="font-bold text-headingS">
+                ALL BOARDS ({data.length})
+              </p>
 
-              {/* <div className="flex flex-col gap-y-5 mt-5">
-                <div className="flex gap-x-5 font-bold">
-                  <Image src={board} alt="Board logo" />
-                  <p>Platform launch</p>
-                </div>
-                <div className="flex gap-x-5 font-bold">
-                  <Image src={board} alt="Board logo" />
-                  <p>Marketing Plan</p>
-                </div>
-                <div className="flex gap-x-5 font-bold">
-                  <Image src={board} alt="Board logo" />
-                  <p>Roadmap</p>
-                </div>
-              </div> */}
-              {data?.map((board: Board) => (
-                <div className="flex gap-x-5 font-bold">
-                  <Image src={boardSvg} alt="Board svg" />
-                  <p>{board.name}</p>
-                </div>
-              ))}
+              <div className="flex flex-col gap-y-3 mt-5">
+                {data?.map((board: Board) => (
+                  <div className="flex gap-x-5 font-bold">
+                    <Image src={boardSvg} alt="Board svg" />
+                    <p>{board.title}</p>
+                  </div>
+                ))}
+              </div>
               <div
-                className="flex gap-x-5 font-bold mt-5"
+                className="flex gap-x-5 font-bold mt-4"
                 onClick={() => {
                   setOpenModal(true);
                 }}
