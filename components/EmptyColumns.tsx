@@ -1,11 +1,10 @@
 import React from "react";
-import Button from "./Button";
 
 export default function EmptyColumns() {
   return (
-    <div>
+    <div className="flex flex-col justify-center items-center">
       <p className="text-neutral-lightGray font-bold mb-5">This board is empty. Create a new column to get started.</p>
-      <Button size="L" variant="primary">+ Add New Column</Button>
+      <button className="btn-primary">+ Add New Column</button>
     </div>
   );
 }

@@ -7,15 +7,16 @@ import eye2 from "@/components/svgs/eye2.svg";
 import { useContext, useState } from "react";
 import { Board, ModalType } from "@/lib/types";
 import { ModalWindow } from "@/app/Providers";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Sidebar({ data }: { data: Board[] }) {
   const [showSidebar, setShowSidebar] = useState(true);
   const { setOpenModal } = useContext(ModalWindow) as ModalType;
-
+  const router = useRouter();
   return (
     <>
       {showSidebar ? (
-        <aside className="bg-white h-screen w-full max-w-[300px] pl-10 pr-16 py-10 flex flex-col justify-between items-start gap-y-16 col-span-1">
+        <aside className="bg-white h-screen w-full max-w-[300px] pl-10 pr-16 py-10 flex flex-col justify-between items-start gap-y-16 col-span-1 row-start-1 row-span-3">
           <div className="flex flex-col gap-y-16">
             {" "}
             <header className="flex justify-start items-center w-full gap-x-5">
@@ -30,12 +31,18 @@ export default function Sidebar({ data }: { data: Board[] }) {
             </header>
             <section className="text-neutral-lightGray">
               <p className="font-bold text-headingS">
-                ALL BOARDS ({data.length})
+                ALL BOARDS ({data?.length})
               </p>
 
               <div className="flex flex-col gap-y-3 mt-5">
                 {data?.map((board: Board) => (
-                  <div className="flex gap-x-5 font-bold">
+                  <div
+                    className="flex gap-x-5 font-bold cursor-pointer"
+                    key={board.id}
+                    onClick={() => {
+                      router.push(board.id);
+                    }}
+                  >
                     <Image src={boardSvg} alt="Board svg" />
                     <p>{board.title}</p>
                   </div>

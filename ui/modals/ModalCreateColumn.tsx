@@ -12,6 +12,7 @@ import Image from "next/image";
 import { createNewBoard } from "@/lib/actions";
 
 export default function ModalCreateBoard() {
+  const { setOpenModal } = useContext(ModalWindow) as ModalType;
   const router = useRouter();
   const {
     register,
@@ -67,10 +68,9 @@ export default function ModalCreateBoard() {
         {fields.map((field: any, index: number) => (
           <div
             className="flex items-center justify-between gap-x-5"
-            key={field.id}
+            key={index}
           >
-            <FormField register={register} name={`columns.${index}.name`} />
-
+            <FormField register={register} name="name" />
             <Image
               className="cursor-pointer"
               src={del}
@@ -86,7 +86,6 @@ export default function ModalCreateBoard() {
         <button
           onClick={addNewColumn}
           className="rounded-full font-bold transition-all w-full py-3 px-6 text-sm bg-neutral-lightestGray text-primary hover:bg-neutral-lightGray"
-          type="button"
         >
           +Add New Column
         </button>

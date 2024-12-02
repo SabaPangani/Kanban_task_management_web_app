@@ -17,7 +17,7 @@ export async function createNewBoardDB(data: Board) {
       },
     });
     console.log(board);
-    revalidatePath("/")
+    revalidatePath("/");
     return board;
   } catch (error) {
     console.error(error);
@@ -27,6 +27,37 @@ export async function createNewBoardDB(data: Board) {
 export async function getAllBoard() {
   try {
     const data: any[] = await prisma.board.findMany();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+export async function getBoardById(id: string) {
+  try {
+    const data = await prisma.board.findUnique({
+      where: { id },
+      include: {
+        columns: {
+          include: {
+            tasks: {
+              include: {
+                subtasks: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function deleteBoardById(id: string) {
+  try {
+    const data = await prisma.board.delete({ where: { id } });
+    revalidatePath("/")
     return data;
   } catch (error) {
     console.error(error);

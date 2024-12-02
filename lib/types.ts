@@ -1,33 +1,40 @@
 import { Dispatch, SetStateAction } from "react";
+import { Status as PrismaStatus } from "@prisma/client"; // Import Prisma's Status
 
-enum Status {
-  Todo,
-  Doing,
-  Done,
-}
+export type Status = PrismaStatus;
 
 export type ModalType = {
   isModalOpen: boolean;
   setOpenModal: Dispatch<SetStateAction<boolean>>;
 };
+export type DeleteModalType = {
+  isDelModalOpen: boolean;
+  setDelModalOpen: Dispatch<SetStateAction<boolean>>;
+};
+
 
 export type Board = {
+  id: string;
   title: string;
   columns: Column[];
 };
+
 export type Column = {
+  id: string;
   name: string;
   tasks: Task[];
 };
 
 export type Task = {
-  name: string;
-  description: string;
+  id: string;
+  title: string;
+  description: string | null;
   status: Status;
-  subTasks: Subtask[];
+  subtasks: Subtask[];
 };
 
 export type Subtask = {
-  name: string;
+  id: string;
+  title: string;
   isComplete: boolean;
 };
