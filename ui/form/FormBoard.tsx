@@ -1,18 +1,22 @@
 "use client";
-import React, { useContext } from "react";
-import { ModalWindow } from "@/app/Providers";
-import { Board, ModalType } from "@/lib/types";
-import { useRouter } from "next/navigation";
+import React from "react";
+import { Board } from "@/lib/types";
 import FormField from "../form/FormField";
 import { useFieldArray, useForm } from "react-hook-form";
 import FormSection from "../form/FormSection";
 import FormHeader from "../form/FormHeader";
 import del from "@/components/svgs/delete.svg";
 import Image from "next/image";
-import { createNewBoard } from "@/lib/actions";
+import { createNewBoard, updateBoard } from "@/lib/actions";
+import { defaultFormValues } from "../form/formData";
 
-export default function ModalCreateBoard() {
-  const router = useRouter();
+export default function FormBoard({
+  isEditing,
+  board,
+}: {
+  isEditing: boolean;
+  board: Board | null;
+}) {
   const {
     register,
     handleSubmit,
@@ -23,7 +27,7 @@ export default function ModalCreateBoard() {
   } = useForm<any>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    // defaultValues: defaultFormValues(invoice),
+    defaultValues: defaultFormValues(board!),
   });
   const { fields, append, remove } = useFieldArray({
     control,
@@ -38,7 +42,7 @@ export default function ModalCreateBoard() {
     try {
       console.log(data);
 
-      await createNewBoard(data);
+      board ? await createNewBoard(data) : await updateBoard(data, data.id);;
     } catch (errors) {
       console.error(errors);
     }

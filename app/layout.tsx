@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import { Providers } from "./Providers";
 import { getAllBoard } from "@/lib/db";
 import PortalWrapper from "@/ui/modals/PortalWrapper";
-import ModalCreateBoard from "@/ui/modals/ModalCreateBoard";
+import ModalCreateBoard from "@/ui/modals/BoardModal";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -36,7 +36,7 @@ export default async function RootLayout({
           </main>
           <div id="modal-root" />
           <PortalWrapper>
-            <ModalCreateBoard />
+            <ModalCreateBoard isEditing={false} board={null}/>
           </PortalWrapper>
         </Providers>
       </body>
