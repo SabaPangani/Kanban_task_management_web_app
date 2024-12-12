@@ -4,14 +4,13 @@ import { Status as PrismaStatus } from "@prisma/client"; // Import Prisma's Stat
 export type Status = PrismaStatus;
 
 export type ModalType = {
-  isModalOpen: boolean;
-  setOpenModal: Dispatch<SetStateAction<boolean>>;
+  activeModal: string | null; // Name of the active modal (null if no modal is open)
+  setActiveModal: (modalName: string | null) => void; // Function to set the active modal
 };
 export type DeleteModalType = {
   isDelModalOpen: boolean;
   setDelModalOpen: Dispatch<SetStateAction<boolean>>;
 };
-
 
 export type Board = {
   id: string;

@@ -8,7 +8,7 @@ export default function BoardModal({
   board,
 }: {
   isEditing: boolean;
-  board: Board | null;
+  board?: Board;
 }) {
-  return <FormBoard isEditing={isEditing} board={board} />;
+  return <FormBoard isEditing={isEditing} board={board!} />;
 }

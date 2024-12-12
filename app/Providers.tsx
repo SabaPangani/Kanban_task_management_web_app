@@ -1,20 +1,16 @@
 "use client";
 
 import { createContext, useState } from "react";
-import { DeleteModalType, ModalType } from "../lib/types";
+import { ModalType } from "../lib/types";
 
-export const ModalWindow = createContext<ModalType | null>(null);
-export const DeleteModalWindow = createContext<DeleteModalType | null>(null);
+export const ModalContext = createContext<ModalType | null>(null);
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [isModalOpen, setOpenModal] = useState(false);
-  const [isDelModalOpen, setDelModalOpen] = useState(false);
+  const [activeModal, setActiveModal] = useState<null | string>(null); 
 
   return (
-    <DeleteModalWindow.Provider value={{ isDelModalOpen, setDelModalOpen }}>
-      <ModalWindow.Provider value={{ isModalOpen, setOpenModal }}>
-        {children}
-      </ModalWindow.Provider>
-    </DeleteModalWindow.Provider>
+    <ModalContext.Provider value={{ activeModal, setActiveModal }}>
+      {children}
+    </ModalContext.Provider>
   );
 }

@@ -18,9 +18,8 @@ export default async function Board({ params }: { params: { title: string } }) {
           <NewColumn />
         </div>
       </div>
-
-      <PortalWrapper>
-        <BoardModal isEditing={false} board={data as any} />
+      <PortalWrapper modalName="editBoard">
+        <BoardModal isEditing={true} board={data as any}/>
       </PortalWrapper>
     </>
   );

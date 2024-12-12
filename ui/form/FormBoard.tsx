@@ -17,6 +17,7 @@ export default function FormBoard({
   isEditing: boolean;
   board: Board | null;
 }) {
+  console.log(isEditing);
   const {
     register,
     handleSubmit,
@@ -42,7 +43,7 @@ export default function FormBoard({
     try {
       console.log(data);
 
-      board ? await createNewBoard(data) : await updateBoard(data, data.id);;
+      board ? await createNewBoard(data) : await updateBoard(data, data.id);
     } catch (errors) {
       console.error(errors);
     }
@@ -59,7 +60,7 @@ export default function FormBoard({
       })}
     >
       <h1 className="text-headingL font-bold text-neutral-dark">
-        Add New Board
+        {isEditing ? "Edit Board" : "Create New Board"}
       </h1>
 
       <FormSection>
@@ -86,16 +87,29 @@ export default function FormBoard({
           </div>
         ))}
       </FormSection>
-      <div className="flex flex-col items-center gap-y-3">
-        <button
-          onClick={addNewColumn}
-          className="rounded-full font-bold transition-all w-full py-3 px-6 text-sm bg-neutral-lightestGray text-primary hover:bg-neutral-lightGray"
-          type="button"
-        >
-          +Add New Column
-        </button>
-        <button className="btn-primary">Create New board</button>
-      </div>
+      {isEditing ? (
+        <div className="flex flex-col items-center gap-y-3">
+          <button
+            onClick={addNewColumn}
+            className="rounded-full font-bold transition-all w-full py-3 px-6 text-sm bg-neutral-lightestGray text-primary hover:bg-neutral-lightGray"
+            type="button"
+          >
+            +Add New Column
+          </button>
+          <button className="btn-primary">Save Changes</button>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center gap-y-3">
+          <button
+            onClick={addNewColumn}
+            className="rounded-full font-bold transition-all w-full py-3 px-6 text-sm bg-neutral-lightestGray text-primary hover:bg-neutral-lightGray"
+            type="button"
+          >
+            +Add New Column
+          </button>
+          <button className="btn-primary">Create New board</button>
+        </div>
+      )}
     </form>
   );
 }

@@ -6,12 +6,14 @@ import eye from "@/components/svgs/eye.svg";
 import eye2 from "@/components/svgs/eye2.svg";
 import { useContext, useState } from "react";
 import { Board, ModalType } from "@/lib/types";
-import { ModalWindow } from "@/app/Providers";
+import { ModalContext } from "@/app/Providers";
 import { usePathname, useRouter } from "next/navigation";
+import PortalWrapper from "@/ui/modals/PortalWrapper";
+import BoardModal from "@/ui/modals/BoardModal";
 
 export default function Sidebar({ data }: { data: Board[] }) {
   const [showSidebar, setShowSidebar] = useState(true);
-  const { setOpenModal } = useContext(ModalWindow) as ModalType;
+  const { activeModal, setActiveModal } = useContext(ModalContext) as ModalType;
   const router = useRouter();
   return (
     <>
@@ -51,7 +53,7 @@ export default function Sidebar({ data }: { data: Board[] }) {
               <div
                 className="flex gap-x-5 font-bold mt-4"
                 onClick={() => {
-                  setOpenModal(true);
+                  setActiveModal("createModal");
                 }}
               >
                 <Image src={newBoard} alt="Board logo" />
@@ -83,6 +85,9 @@ export default function Sidebar({ data }: { data: Board[] }) {
           <Image src={eye2} alt="Eye logo" />
         </div>
       )}
+      <PortalWrapper modalName="createModal">
+        <BoardModal isEditing={false} />
+      </PortalWrapper>
     </>
   );
 }

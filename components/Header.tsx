@@ -1,13 +1,14 @@
 "use client";
-import { DeleteModalType } from "@/lib/types";
+import { DeleteModalType, ModalType } from "@/lib/types";
 import React, { useContext } from "react";
-import { DeleteModalWindow } from "@/app/Providers";
+import { ModalContext } from "@/app/Providers";
 import ModalDeleteBoard from "@/ui/modals/ModalDeleteBoard";
 import DeletePortalWrapper from "@/ui/modals/DeletePortalWrapper";
 import { usePathname } from "next/navigation";
+import PortalWrapper from "@/ui/modals/PortalWrapper";
 
 export default function Header() {
-  const { setDelModalOpen } = useContext(DeleteModalWindow) as DeleteModalType;
+  const { activeModal, setActiveModal } = useContext(ModalContext) as ModalType;
   const id = usePathname().replace("/", "");
   return (
     <>
@@ -25,16 +26,16 @@ export default function Header() {
             <i
               className="bi bi-three-dots-vertical "
               onClick={() => {
-                setDelModalOpen(true);
+                setActiveModal("deleteModal");
               }}
             ></i>
           </button>
         </div>
       </header>
 
-      <DeletePortalWrapper>
+      <PortalWrapper modalName="deleteModal">
         <ModalDeleteBoard id={id} />
-      </DeletePortalWrapper>
+      </PortalWrapper>
     </>
   );
 }
