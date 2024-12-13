@@ -16,7 +16,7 @@ export default function Column({ column }: { column: ColumnType }) {
             0 of 3 substasks
           </span>
         </div>
-      </section> 
+      </section>
     </div>
   );
 }

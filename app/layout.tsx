@@ -22,7 +22,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const data = await getAllBoard();
-
   return (
     <html lang="en">
       <body

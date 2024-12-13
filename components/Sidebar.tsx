@@ -15,6 +15,7 @@ export default function Sidebar({ data }: { data: Board[] }) {
   const [showSidebar, setShowSidebar] = useState(true);
   const { activeModal, setActiveModal } = useContext(ModalContext) as ModalType;
   const router = useRouter();
+  console.log(data)
   return (
     <>
       {showSidebar ? (

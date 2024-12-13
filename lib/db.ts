@@ -27,13 +27,15 @@ export async function createNewBoardDB(data: Board) {
 export async function updateBoardDB(data: Board, id: string) {
   try {
     const { title, columns } = data;
-    const board = await prisma.board.create({
+    const board = await prisma.board.update({
+      where: { id },
       data: {
         title,
         columns: {
-          create: columns
-            .filter((column: Column) => column.name.trim() !== "")
-            .map((column: Column) => ({ name: column.name })),
+          updateMany: columns.map((column) => ({
+            where: { id: column.id },
+            data: { name: column.name },
+          })),
         },
       },
     });

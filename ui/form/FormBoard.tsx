@@ -13,11 +13,12 @@ import { defaultFormValues } from "../form/formData";
 export default function FormBoard({
   isEditing,
   board,
+  id,
 }: {
   isEditing: boolean;
   board: Board | null;
+  id: string;
 }) {
-  console.log(isEditing);
   const {
     register,
     handleSubmit,
@@ -41,9 +42,8 @@ export default function FormBoard({
 
   const onFormSubmit = async (data: Board) => {
     try {
+      isEditing ? await updateBoard(data, id) : await createNewBoard(data);
       console.log(data);
-
-      board ? await createNewBoard(data) : await updateBoard(data, data.id);
     } catch (errors) {
       console.error(errors);
     }
