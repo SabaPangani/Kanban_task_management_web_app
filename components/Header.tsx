@@ -10,6 +10,7 @@ import PortalWrapper from "@/ui/modals/PortalWrapper";
 export default function Header() {
   const { activeModal, setActiveModal } = useContext(ModalContext) as ModalType;
   const id = usePathname().replace("/", "");
+  console.log(id)
   return (
     <>
       <header className="bg-white w-full ml-auto h-[97px] flex items-center justify-between px-10  col-span-2 row-start-1 row-span-1">
