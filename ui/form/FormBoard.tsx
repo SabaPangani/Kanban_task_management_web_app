@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Board } from "@/lib/types";
 import FormField from "../form/FormField";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -40,6 +40,9 @@ export default function FormBoard({
     append({ name: "" });
   };
 
+  useEffect(() => {
+    console.log(fields);
+  }, [fields]);
   const onFormSubmit = async (data: Board) => {
     try {
       isEditing ? await updateBoard(data, id) : await createNewBoard(data);

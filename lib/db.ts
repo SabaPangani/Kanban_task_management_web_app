@@ -32,15 +32,23 @@ export async function updateBoardDB(data: Board, id: string) {
       where: { id },
       data: { title },
     });
+    const columnIds = columns
+      .filter((column) => column.id)
+      .map((column) => column.id);
+    await prisma.column.deleteMany({
+      where: {
+        boardId: id,
+        id: { notIn: columnIds },
+      },
+    });
 
-    const updatePromises = columns.map(column => {
+    const updatePromises = columns.map((column) => {
       if (column.id) {
         return prisma.column.update({
           where: { id: column.id },
           data: { name: column.name },
         });
       } else {
-        // Create new column
         return prisma.column.create({
           data: {
             name: column.name,
@@ -55,11 +63,10 @@ export async function updateBoardDB(data: Board, id: string) {
     revalidatePath("/");
     return board;
   } catch (error) {
-    console.error('Error updating board:', error);
-    throw error; // Rethrow error to allow caller to handle it
+    console.error("Error updating board:", error);
+    throw error;
   }
 }
-
 
 export async function getAllBoard() {
   try {
@@ -94,6 +101,15 @@ export async function getBoardById(id: string) {
 export async function deleteBoardById(id: string) {
   try {
     const data = await prisma.board.delete({ where: { id } });
+    revalidatePath("/");
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+export async function deleteColumnById(id: string) {
+  try {
+    const data = await prisma.column.delete({ where: { id } });
     revalidatePath("/");
     return data;
   } catch (error) {
