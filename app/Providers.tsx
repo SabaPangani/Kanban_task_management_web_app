@@ -3,14 +3,14 @@
 import { createContext, useState } from "react";
 import { ModalType } from "../lib/types";
 
-export const ModalWindow = createContext<ModalType | null>(null);
+export const ModalContext = createContext<ModalType | null>(null);
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [isModalOpen, setOpenModal] = useState(false);
+  const [activeModal, setActiveModal] = useState<null | string>(null); 
 
   return (
-    <ModalWindow.Provider value={{ isModalOpen, setOpenModal }}>
+    <ModalContext.Provider value={{ activeModal, setActiveModal }}>
       {children}
-    </ModalWindow.Provider>
+    </ModalContext.Provider>
   );
 }

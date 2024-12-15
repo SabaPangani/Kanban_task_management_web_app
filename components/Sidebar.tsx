@@ -1,19 +1,25 @@
 "use client";
 import Image from "next/image";
-import board from "@/components/svgs/board.svg";
+import boardSvg from "@/components/svgs/board.svg";
 import newBoard from "@/components/svgs/newBoard.svg";
 import eye from "@/components/svgs/eye.svg";
 import eye2 from "@/components/svgs/eye2.svg";
 import { useContext, useState } from "react";
-import { ModalType } from "@/lib/types";
-import { ModalWindow } from "@/app/Providers";
-export default function Sidebar() {
+import { Board, ModalType } from "@/lib/types";
+import { ModalContext } from "@/app/Providers";
+import { usePathname, useRouter } from "next/navigation";
+import PortalWrapper from "@/ui/modals/PortalWrapper";
+import BoardModal from "@/ui/modals/BoardModal";
+
+export default function Sidebar({ data }: { data: Board[] }) {
   const [showSidebar, setShowSidebar] = useState(true);
-  const { setOpenModal } = useContext(ModalWindow) as ModalType;
+  const { activeModal, setActiveModal } = useContext(ModalContext) as ModalType;
+  const router = useRouter();
+  console.log(data)
   return (
     <>
       {showSidebar ? (
-        <aside className="bg-white h-screen w-full max-w-[300px] pl-10 pr-16 py-10 flex flex-col justify-between items-start gap-y-16 col-span-1">
+        <aside className="bg-white h-screen w-full max-w-[300px] pl-10 pr-16 py-10 flex flex-col justify-between items-start gap-y-16 col-span-1 row-start-1 row-span-3">
           <div className="flex flex-col gap-y-16">
             {" "}
             <header className="flex justify-start items-center w-full gap-x-5">
@@ -22,29 +28,33 @@ export default function Sidebar() {
                 <span className="w-[6px] h-[25px] rounded-md bg-primary-light"></span>
                 <span className="w-[6px] h-[25px] rounded-md bg-[#a9a4ff9e]"></span>
               </div>
-              <h1 className="text-headingXL font-bold">kanban</h1>
+              <h1 className="text-headingXL font-bold text-neutral-dark">
+                kanban
+              </h1>
             </header>
             <section className="text-neutral-lightGray">
-              <p className="font-bold text-headingS">ALL BOARDS (3)</p>
+              <p className="font-bold text-headingS">
+                ALL BOARDS ({data?.length})
+              </p>
 
-              <div className="flex flex-col gap-y-5 mt-5">
-                <div className="flex gap-x-5 font-bold">
-                  <Image src={board} alt="Board logo" />
-                  <p>Platform launch</p>
-                </div>
-                <div className="flex gap-x-5 font-bold">
-                  <Image src={board} alt="Board logo" />
-                  <p>Marketing Plan</p>
-                </div>
-                <div className="flex gap-x-5 font-bold">
-                  <Image src={board} alt="Board logo" />
-                  <p>Roadmap</p>
-                </div>
+              <div className="flex flex-col gap-y-3 mt-5">
+                {data?.map((board: Board) => (
+                  <div
+                    className="flex gap-x-5 font-bold cursor-pointer"
+                    key={board.id}
+                    onClick={() => {
+                      router.push(board.id);
+                    }}
+                  >
+                    <Image src={boardSvg} alt="Board svg" />
+                    <p>{board.title}</p>
+                  </div>
+                ))}
               </div>
               <div
-                className="flex gap-x-5 font-bold mt-5"
+                className="flex gap-x-5 font-bold mt-4"
                 onClick={() => {
-                  setOpenModal(true);
+                  setActiveModal("createModal");
                 }}
               >
                 <Image src={newBoard} alt="Board logo" />
@@ -76,6 +86,9 @@ export default function Sidebar() {
           <Image src={eye2} alt="Eye logo" />
         </div>
       )}
+      <PortalWrapper modalName="createModal">
+        <BoardModal isEditing={false} />
+      </PortalWrapper>
     </>
   );
 }

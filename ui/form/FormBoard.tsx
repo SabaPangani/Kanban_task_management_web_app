@@ -1,19 +1,24 @@
 "use client";
-import React, { useContext } from "react";
-import { ModalWindow } from "@/app/Providers";
-import { Board, ModalType } from "@/lib/types";
-import { useRouter } from "next/navigation";
+import React from "react";
+import { Board } from "@/lib/types";
 import FormField from "../form/FormField";
 import { useFieldArray, useForm } from "react-hook-form";
 import FormSection from "../form/FormSection";
 import FormHeader from "../form/FormHeader";
 import del from "@/components/svgs/delete.svg";
 import Image from "next/image";
-import { createNewBoard } from "@/lib/actions";
+import { createNewBoard, updateBoard } from "@/lib/actions";
+import { defaultFormValues } from "../form/formData";
 
-export default function ModalCreateBoard() {
-  const { setOpenModal } = useContext(ModalWindow) as ModalType;
-  const router = useRouter();
+export default function FormBoard({
+  isEditing,
+  board,
+  id,
+}: {
+  isEditing: boolean;
+  board: Board | null;
+  id: string;
+}) {
   const {
     register,
     handleSubmit,
@@ -24,7 +29,7 @@ export default function ModalCreateBoard() {
   } = useForm<any>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    // defaultValues: defaultFormValues(invoice),
+    defaultValues: defaultFormValues(board!),
   });
   const { fields, append, remove } = useFieldArray({
     control,
@@ -37,9 +42,8 @@ export default function ModalCreateBoard() {
 
   const onFormSubmit = async (data: Board) => {
     try {
+      isEditing ? await updateBoard(data, id) : await createNewBoard(data);
       console.log(data);
-
-      await createNewBoard(data);
     } catch (errors) {
       console.error(errors);
     }
@@ -56,7 +60,7 @@ export default function ModalCreateBoard() {
       })}
     >
       <h1 className="text-headingL font-bold text-neutral-dark">
-        Add New Board
+        {isEditing ? "Edit Board" : "Create New Board"}
       </h1>
 
       <FormSection>
@@ -68,9 +72,10 @@ export default function ModalCreateBoard() {
         {fields.map((field: any, index: number) => (
           <div
             className="flex items-center justify-between gap-x-5"
-            key={index}
+            key={field.id}
           >
-            <FormField register={register} name="name" />
+            <FormField register={register} name={`columns.${index}.name`} />
+
             <Image
               className="cursor-pointer"
               src={del}
@@ -82,15 +87,29 @@ export default function ModalCreateBoard() {
           </div>
         ))}
       </FormSection>
-      <div className="flex flex-col items-center gap-y-3">
-        <button
-          onClick={addNewColumn}
-          className="rounded-full font-bold transition-all w-full py-3 px-6 text-sm bg-neutral-lightestGray text-primary hover:bg-neutral-lightGray"
-        >
-          +Add New Column
-        </button>
-        <button className="btn-primary">Create New board</button>
-      </div>
+      {isEditing ? (
+        <div className="flex flex-col items-center gap-y-3">
+          <button
+            onClick={addNewColumn}
+            className="rounded-full font-bold transition-all w-full py-3 px-6 text-sm bg-neutral-lightestGray text-primary hover:bg-neutral-lightGray"
+            type="button"
+          >
+            +Add New Column
+          </button>
+          <button className="btn-primary">Save Changes</button>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center gap-y-3">
+          <button
+            onClick={addNewColumn}
+            className="rounded-full font-bold transition-all w-full py-3 px-6 text-sm bg-neutral-lightestGray text-primary hover:bg-neutral-lightGray"
+            type="button"
+          >
+            +Add New Column
+          </button>
+          <button className="btn-primary">Create New board</button>
+        </div>
+      )}
     </form>
   );
 }

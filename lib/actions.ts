@@ -1,0 +1,22 @@
+import { Board } from "./types";
+import { createNewBoardDB, updateBoardDB } from "./db";
+
+export async function createNewBoard(data: Board) {
+  try {
+    console.log(data, "data");
+    const board = await createNewBoardDB(data);
+    return board;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function updateBoard(data: Board, id: string) {
+  try {
+    const board = await updateBoardDB(data, id?.replace(/^\//, ''));
+    console.log(id, data, "update");
+    return board;
+  } catch (error) {
+    console.error(error);
+  }
+}
