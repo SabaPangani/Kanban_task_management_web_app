@@ -27,19 +27,34 @@ export async function createNewBoardDB(data: Board) {
 export async function updateBoardDB(data: Board, id: string) {
   try {
     const { title, columns } = data;
+
     const board = await prisma.board.update({
       where: { id },
       data: {
         title,
-        columns: {
-          updateMany: columns.map((column) => ({
-            where: { id: column.id },
-            data: { name: column.name },
-          })),
-        },
       },
     });
-    console.log(board);
+
+    for (const column of columns) {
+      if (column.id) {
+        await prisma.column.update({
+          where: { id: column.id },
+          data: { name: column.name },
+        });
+      }
+    }
+
+    for (const column of columns) {
+      if (!column.id) {
+        await prisma.column.create({
+          data: {
+            name: column.name,
+            boardId: id, 
+          },
+        });
+      }
+    }
+
     revalidatePath("/");
     return board;
   } catch (error) {
