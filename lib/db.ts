@@ -30,37 +30,36 @@ export async function updateBoardDB(data: Board, id: string) {
 
     const board = await prisma.board.update({
       where: { id },
-      data: {
-        title,
-      },
+      data: { title },
     });
 
-    for (const column of columns) {
+    const updatePromises = columns.map(column => {
       if (column.id) {
-        await prisma.column.update({
+        return prisma.column.update({
           where: { id: column.id },
           data: { name: column.name },
         });
-      }
-    }
-
-    for (const column of columns) {
-      if (!column.id) {
-        await prisma.column.create({
+      } else {
+        // Create new column
+        return prisma.column.create({
           data: {
             name: column.name,
-            boardId: id, 
+            boardId: id,
           },
         });
       }
-    }
+    });
+
+    await Promise.all(updatePromises);
 
     revalidatePath("/");
     return board;
   } catch (error) {
-    console.error(error);
+    console.error('Error updating board:', error);
+    throw error; // Rethrow error to allow caller to handle it
   }
 }
+
 
 export async function getAllBoard() {
   try {
