@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect } from "react";
-import { Board } from "@/lib/types";
+import React, { useContext, useEffect } from "react";
+import { Board, ModalType } from "@/lib/types";
 import FormField from "../form/FormField";
 import { useFieldArray, useForm } from "react-hook-form";
 import FormSection from "../form/FormSection";
@@ -9,6 +9,7 @@ import del from "@/components/svgs/delete.svg";
 import Image from "next/image";
 import { createNewBoard, updateBoard } from "@/lib/actions";
 import { defaultFormValues } from "../form/formData";
+import { ModalContext } from "@/app/Providers";
 
 export default function FormBoard({
   isEditing,
@@ -19,6 +20,8 @@ export default function FormBoard({
   board: Board | null;
   id: string;
 }) {
+  const { activeModal, setActiveModal } = useContext(ModalContext) as ModalType;
+
   const {
     register,
     handleSubmit,
@@ -47,6 +50,7 @@ export default function FormBoard({
     try {
       isEditing ? await updateBoard(data, id) : await createNewBoard(data);
       console.log(data);
+      setActiveModal("")
     } catch (errors) {
       console.error(errors);
     }

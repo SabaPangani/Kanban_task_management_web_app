@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
-import { Status as PrismaStatus } from "@prisma/client"; // Import Prisma's Status
+import { Status as PrismaStatus } from "@prisma/client"; 
 
 export type Status = PrismaStatus;
 
 export type ModalType = {
-  activeModal: string | null; // Name of the active modal (null if no modal is open)
-  setActiveModal: (modalName: string | null) => void; // Function to set the active modal
+  activeModal: string | null; 
+  setActiveModal: (modalName: string | null) => void;
 };
 export type DeleteModalType = {
   isDelModalOpen: boolean;
