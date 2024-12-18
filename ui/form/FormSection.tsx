@@ -5,5 +5,5 @@ export default function FormSection({
 }: {
   children: React.ReactNode;
 }) {
-  return <section className="w-full max-w-full flex flex-col gap-y-3">{children}</section>;
+  return <section className="w-full max-w-full flex flex-col gap-y-2">{children}</section>;
 }

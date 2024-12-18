@@ -1,26 +1,54 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "./prisma";
-import { Board, Column } from "./types";
+import { Board, Column, Task } from "./types";
 
 export async function createNewBoardDB(data: Board) {
   try {
     const { title, columns } = data;
+
     const board = await prisma.board.create({
-      data: {
-        title,
-        columns: {
-          create: columns
-            .filter((column: Column) => column.name.trim() !== "")
-            .map((column: Column) => ({ name: column.name })),
-        },
-      },
+      data: { title },
     });
-    console.log(board);
+
+    await createColumns(columns, board.id);
+
     revalidatePath("/");
     return board;
   } catch (error) {
-    console.error(error);
+    console.error("Error creating board:", error);
+    throw error;
+  }
+}
+
+export async function createColumns(columns: Column[], boardId: string) {
+  try {
+    const filteredColumns = columns.filter(
+      (column: Column) => column.name.trim() !== ""
+    );
+    const createPromises = filteredColumns.map((column: Column) =>
+      prisma.column.create({
+        data: {
+          name: column.name,
+          boardId,
+        },
+      })
+    );
+    const createdColumns = await Promise.all(createPromises);
+    return createdColumns;
+  } catch (error) {
+    console.error("Error creating columns:", error);
+    throw error;
+  }
+}
+
+export async function createNewTaskDB(data: any) {
+  try {
+    console.log(data," server")
+    const task = prisma.task.create({ data });
+    return task
+  } catch (error) {
+    console.error("Error creating tasks: ", error)
   }
 }
 
@@ -32,12 +60,26 @@ export async function updateBoardDB(data: Board, id: string) {
       where: { id },
       data: { title },
     });
+
+    await updateColumns(columns, id);
+
+    revalidatePath("/");
+    return board;
+  } catch (error) {
+    console.error("Error updating board:", error);
+    throw error;
+  }
+}
+
+export async function updateColumns(columns: Column[], boardId: string) {
+  try {
     const columnIds = columns
       .filter((column) => column.id)
       .map((column) => column.id);
+
     await prisma.column.deleteMany({
       where: {
-        boardId: id,
+        boardId,
         id: { notIn: columnIds },
       },
     });
@@ -52,25 +94,24 @@ export async function updateBoardDB(data: Board, id: string) {
         return prisma.column.create({
           data: {
             name: column.name,
-            boardId: id,
+            boardId,
           },
         });
       }
     });
 
     await Promise.all(updatePromises);
-
-    revalidatePath("/");
-    return board;
   } catch (error) {
-    console.error("Error updating board:", error);
+    console.error("Error updating columns:", error);
     throw error;
   }
 }
 
 export async function getAllBoard() {
   try {
-    const data: any[] = await prisma.board.findMany();
+    const data: any[] = await prisma.board.findMany({
+      include: { columns: true },
+    });
     return data;
   } catch (error) {
     console.error(error);

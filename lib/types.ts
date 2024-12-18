@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
-import { Status as PrismaStatus } from "@prisma/client"; 
+import { Status as PrismaStatus } from "@prisma/client";
 
 export type Status = PrismaStatus;
 
 export type ModalType = {
-  activeModal: string | null; 
+  activeModal: string | null;
   setActiveModal: (modalName: string | null) => void;
 };
 export type DeleteModalType = {

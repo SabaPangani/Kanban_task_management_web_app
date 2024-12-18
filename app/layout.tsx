@@ -5,9 +5,7 @@ import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { Providers } from "./Providers";
 import { getAllBoard } from "@/lib/db";
-import PortalWrapper from "@/ui/modals/PortalWrapper";
-import ModalCreateBoard from "@/ui/modals/BoardModal";
-import BoardModal from "@/ui/modals/BoardModal";
+import { BoardProvider } from "@/lib/BoardContext";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -22,6 +20,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const data = await getAllBoard();
+  console.log(data)
   return (
     <html lang="en">
       <body
@@ -29,12 +28,14 @@ export default async function RootLayout({
         suppressHydrationWarning={true}
       >
         <Providers>
-          <main className="grid grid-cols-[300px_1fr] h-screen">
-            <Sidebar data={data!} />
-            <Header />
-            {children}
-          </main>
-          <div id="modal-root" />
+          <BoardProvider>
+            <main className="grid grid-cols-[300px_1fr] h-screen">
+              <Sidebar data={data!} />
+              <Header />
+              {children}
+            </main>
+            <div id="modal-root" />
+          </BoardProvider>
         </Providers>
       </body>
     </html>

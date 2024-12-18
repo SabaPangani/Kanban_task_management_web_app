@@ -10,12 +10,15 @@ import { ModalContext } from "@/app/Providers";
 import { usePathname, useRouter } from "next/navigation";
 import PortalWrapper from "@/ui/modals/PortalWrapper";
 import BoardModal from "@/ui/modals/BoardModal";
+import { useBoardContext } from "@/lib/BoardContext";
 
 export default function Sidebar({ data }: { data: Board[] }) {
   const [showSidebar, setShowSidebar] = useState(true);
   const { activeModal, setActiveModal } = useContext(ModalContext) as ModalType;
   const router = useRouter();
-  console.log(data)
+  const { setSelectedBoard } = useBoardContext();
+
+  console.log(data);
   return (
     <>
       {showSidebar ? (
@@ -44,6 +47,7 @@ export default function Sidebar({ data }: { data: Board[] }) {
                     key={board.id}
                     onClick={() => {
                       router.push(board.id);
+                      setSelectedBoard(board)
                     }}
                   >
                     <Image src={boardSvg} alt="Board svg" />

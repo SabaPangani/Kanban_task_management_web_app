@@ -3,7 +3,12 @@ import React from "react";
 
 export default function ModalDeleteBoard({ id }: { id: string }) {
   return (
-    <div className="flex flex-col px-7 p-5 bg-white max-w-[480px] w-full rounded-xl">
+    <div
+      className="flex flex-col px-7 p-5 bg-white max-w-[480px] w-full rounded-xl"
+      onClick={(event: React.MouseEvent<HTMLElement>) =>
+        event.stopPropagation()
+      }
+    >
       <h3 className="text-accent-red font-bold text-headingL">
         Delete this board
       </h3>
@@ -13,9 +18,14 @@ export default function ModalDeleteBoard({ id }: { id: string }) {
       </p>
 
       <div className="flex flex-row gap-x-5">
-        <button className="btn-destructive w-full py-2" onClick={() => {
-            deleteBoardById(id)
-        }}>Delete</button>
+        <button
+          className="btn-destructive w-full py-2"
+          onClick={() => {
+            deleteBoardById(id);
+          }}
+        >
+          Delete
+        </button>
         <button className="btn-secondary w-full py-2">Cancel</button>
       </div>
     </div>

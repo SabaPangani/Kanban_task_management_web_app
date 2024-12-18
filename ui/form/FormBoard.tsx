@@ -50,7 +50,9 @@ export default function FormBoard({
     try {
       isEditing ? await updateBoard(data, id) : await createNewBoard(data);
       console.log(data);
-      setActiveModal("")
+      if (!isSubmitting) {
+        setActiveModal("");
+      }
     } catch (errors) {
       console.error(errors);
     }
