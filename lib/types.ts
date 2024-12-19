@@ -1,7 +1,4 @@
 import { Dispatch, SetStateAction } from "react";
-import { Status as PrismaStatus } from "@prisma/client";
-
-export type Status = PrismaStatus;
 
 export type ModalType = {
   activeModal: string | null;
@@ -28,7 +25,7 @@ export type Task = {
   id: string;
   title: string;
   description: string | null;
-  status: Status;
+  status: string;
   subtasks: Subtask[];
 };
 

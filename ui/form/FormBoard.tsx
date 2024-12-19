@@ -8,7 +8,7 @@ import FormHeader from "../form/FormHeader";
 import del from "@/components/svgs/delete.svg";
 import Image from "next/image";
 import { createNewBoard, updateBoard } from "@/lib/actions";
-import { defaultFormValues } from "../form/formData";
+import { defaultBoardValues } from "../form/formData";
 import { ModalContext } from "@/app/Providers";
 
 export default function FormBoard({
@@ -32,7 +32,7 @@ export default function FormBoard({
   } = useForm<any>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    defaultValues: defaultFormValues(board!),
+    defaultValues: defaultBoardValues(board!),
   });
   const { fields, append, remove } = useFieldArray({
     control,
@@ -74,7 +74,7 @@ export default function FormBoard({
 
       <FormSection>
         <FormHeader name="Name" />
-        <FormField register={register} name="title" />
+        <FormField register={register} name="title" placeholder="e.g. Web Design"/>
       </FormSection>
       <FormSection>
         {fields.length ? <FormHeader name="Columns" /> : ""}
@@ -83,7 +83,7 @@ export default function FormBoard({
             className="flex items-center justify-between gap-x-5"
             key={field.id}
           >
-            <FormField register={register} name={`columns.${index}.name`} />
+            <FormField register={register} name={`columns.${index}.name`} placeholder="e.g Todo"/>
 
             <Image
               className="cursor-pointer"

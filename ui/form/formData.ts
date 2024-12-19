@@ -1,6 +1,6 @@
-import { Board } from "@/lib/types";
+import { Board, Task } from "@/lib/types";
 
-export const defaultFormValues = (board: Board) => {
+export const defaultBoardValues = (board: Board) => {
   if (board) {
     return {
       title: board.title,
@@ -10,6 +10,24 @@ export const defaultFormValues = (board: Board) => {
     return {
       title: "",
       columns: [],
+    };
+  }
+};
+
+export const defaultTaskValues = (task: Task) => {
+  if (task) {
+    return {
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      subtasks: task.subtasks,
+    };
+  } else {
+    return {
+      title: "",
+      description: "",
+      status: "",
+      subtasks: [],
     };
   }
 };

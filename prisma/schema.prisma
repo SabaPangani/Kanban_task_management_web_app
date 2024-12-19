@@ -24,23 +24,17 @@ model Column {
   id        String   @id @default(uuid())
   name      String
   boardId   String
-  board    Board    @relation(fields: [boardId], references: [id], onDelete: Cascade) 
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade) 
   tasks     Task[]
-}
-
-enum Status {
-  Todo
-  Doing
-  Done
 }
 
 model Task {
   id          String    @id @default(uuid())
   title       String
   description String?
-  status      Status
+  status      String
   columnId    String
-  column      Column    @relation(fields: [columnId], references: [id])
+  column      Column    @relation(fields: [columnId], references: [id], onDelete: Cascade)
   subtasks    Subtask[]
 }
 

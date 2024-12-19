@@ -44,11 +44,25 @@ export async function createColumns(columns: Column[], boardId: string) {
 
 export async function createNewTaskDB(data: any) {
   try {
-    console.log(data," server")
-    const task = prisma.task.create({ data });
-    return task
+    console.log(data, "server");
+    const task = await prisma.task.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        status: data.status,
+        columnId: data.id,
+        subtasks: {
+          create: data.subtasks.map((subtask: any) => ({
+            title: subtask.name, 
+          })),
+        },
+      },
+    });
+    revalidatePath("/");
+    return task;
   } catch (error) {
-    console.error("Error creating tasks: ", error)
+    console.error("Error creating tasks: ", error);
+    throw error;
   }
 }
 
@@ -110,13 +124,24 @@ export async function updateColumns(columns: Column[], boardId: string) {
 export async function getAllBoard() {
   try {
     const data: any[] = await prisma.board.findMany({
-      include: { columns: true },
+      include: {
+        columns: {
+          include: {
+            tasks: {
+              include: {
+                subtasks: true,
+              },
+            },
+          },
+        },
+      },
     });
     return data;
   } catch (error) {
     console.error(error);
   }
 }
+
 export async function getBoardById(id: string) {
   try {
     const data = await prisma.board.findUnique({
@@ -142,12 +167,14 @@ export async function getBoardById(id: string) {
 export async function deleteBoardById(id: string) {
   try {
     const data = await prisma.board.delete({ where: { id } });
+    console.log("deleted");
     revalidatePath("/");
     return data;
   } catch (error) {
     console.error(error);
   }
 }
+
 export async function deleteColumnById(id: string) {
   try {
     const data = await prisma.column.delete({ where: { id } });

@@ -6,7 +6,7 @@ import ModalDeleteBoard from "@/ui/modals/ModalDeleteBoard";
 import { usePathname } from "next/navigation";
 import PortalWrapper from "@/ui/modals/PortalWrapper";
 import { useBoardContext } from "@/lib/BoardContext";
-import TaskModal from "@/ui/modals/TaskModal";
+import TaskModal from "@/ui/modals/CreateTaskModal";
 
 export default function Header() {
   const { activeModal, setActiveModal } = useContext(ModalContext) as ModalType;
@@ -22,7 +22,8 @@ export default function Header() {
 
         <div className="flex gap-x-5 items-center">
           <button
-            className="btn-primary"
+            className="btn-primary disabled:opacity-20"
+            disabled={!selectedBoard?.columns.length}
             onClick={() => {
               setActiveModal("taskModal");
             }}

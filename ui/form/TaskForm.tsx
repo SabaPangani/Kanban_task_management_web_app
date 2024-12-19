@@ -4,10 +4,19 @@ import FormSection from "./FormSection";
 import FormHeader from "./FormHeader";
 import Image from "next/image";
 import del from "@/components/svgs/delete.svg";
+import { Board, ModalType, Task } from "@/lib/types";
+import { useContext } from "react";
+import { ModalContext } from "@/app/Providers";
 import { createNewTask } from "@/lib/actions";
-import { Board, Task } from "@/lib/types";
+import { defaultTaskValues } from "./formData";
 
-export default function TaskForm({ selectedBoard }: { selectedBoard: Board }) {
+export default function TaskForm({
+  selectedBoard,
+  task,
+}: {
+  selectedBoard: Board;
+  task?: Task;
+}) {
   const {
     register,
     handleSubmit,
@@ -18,23 +27,31 @@ export default function TaskForm({ selectedBoard }: { selectedBoard: Board }) {
   } = useForm<any>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    // defaultValues: defaultFormValues(board!),
+    defaultValues: defaultTaskValues(task!),
   });
   const { fields, append, remove } = useFieldArray({
     control,
     name: "subtasks",
   });
+  const { setActiveModal } = useContext(ModalContext) as ModalType;
 
   const addNewSubtask = () => {
     append({ name: "" });
   };
 
   const onFormSubmit = async (data: Task) => {
+    console.log(selectedBoard);
     const id = selectedBoard.columns[0].id;
     const modifiedData = { ...data, id };
+    console.log(data);
     try {
       createNewTask(modifiedData);
-    } catch (error) {}
+      if (!isSubmitting) {
+        setActiveModal("");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <form
@@ -50,9 +67,20 @@ export default function TaskForm({ selectedBoard }: { selectedBoard: Board }) {
 
       <FormSection>
         <FormHeader name="Title" />
-        <FormField register={register} name="title" />
+        <FormField
+          register={register}
+          name="title"
+          placeholder="e.g. Take coffee break"
+        />
         <FormHeader name="Description" />
-        <FormField register={register} name="description" />
+        {/* <FormField register={register} name="description" /> */}
+        <textarea
+        {...register("description", { required: "description is required" })}
+          name="description"
+          className="w-full outline-none border border-neutral-lightestGray rounded-md py-2 px-3 text-neutral-dark font-medium resize-none placeholder:text-sm text-headingM"
+          placeholder="e.g. It’s always good to take a break. This 15 minute break will 
+            recharge the batteries a little."
+        ></textarea>
       </FormSection>
       <FormSection>
         {fields.length ? <FormHeader name="Subtasks" /> : ""}
@@ -61,7 +89,11 @@ export default function TaskForm({ selectedBoard }: { selectedBoard: Board }) {
             className="flex items-center justify-between gap-x-5"
             key={field.id}
           >
-            <FormField register={register} name={`subtasks.${index}.name`} />
+            <FormField
+              register={register}
+              name={`subtasks.${index}.name`}
+              placeholder="e.g. Make coffee"
+            />
             <Image
               className="cursor-pointer"
               src={del}
@@ -87,9 +119,11 @@ export default function TaskForm({ selectedBoard }: { selectedBoard: Board }) {
           {...register("status", { required: "Status is required" })}
           className="border border-neutral-light rounded-md p-2 w-full text-neutral-dark outline-none text-headingM"
         >
-          <option value="Todo">Todo</option>
-          <option value="Doing">Doing</option>
-          <option value="Done">Done</option>
+          {selectedBoard.columns.map((column) => (
+            <option key={column.id} value={column.name}>
+              {column.name}
+            </option>
+          ))}
         </select>
         {errors.status && <span className="text-red-500 text-sm"></span>}
       </FormSection>
@@ -97,4 +131,7 @@ export default function TaskForm({ selectedBoard }: { selectedBoard: Board }) {
       <button className="btn-primary">Create Task</button>
     </form>
   );
+}
+function setActiveModal(arg0: string) {
+  throw new Error("Function not implemented.");
 }
