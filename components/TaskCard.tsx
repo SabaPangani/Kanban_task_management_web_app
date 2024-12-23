@@ -2,6 +2,7 @@
 import { ModalContext } from "@/app/Providers";
 import { useBoardContext } from "@/lib/BoardContext";
 import { ModalType, Task } from "@/lib/types";
+import CreateTaskModal from "@/ui/modals/CreateTaskModal";
 import PortalWrapper from "@/ui/modals/PortalWrapper";
 import TaskModal from "@/ui/modals/TaskModal";
 import React, { useContext } from "react";
@@ -12,7 +13,7 @@ export default function TaskCard({ task }: { task: Task }) {
   return (
     <>
       <div
-        className="bg-white font-bold px-5 py-4 rounded-lg shadow-lg w-full max-w-[280px] cursor-pointer hover:bg-purple-700"
+        className="bg-white font-bold px-5 py-4 rounded-lg shadow-lg w-full max-w-[280px] cursor-pointer"
         key={task.id}
         onClick={() => {
           setActiveModal(`task-${task.id}`);
@@ -26,6 +27,13 @@ export default function TaskCard({ task }: { task: Task }) {
 
       <PortalWrapper modalName={`task-${task.id}`}>
         <TaskModal task={task} columns={selectedBoard?.columns!} />
+      </PortalWrapper>
+      <PortalWrapper modalName={`editTask-${task.id}`}>
+        <CreateTaskModal
+          selectedBoard={selectedBoard!}
+          isEditing={true}
+          task={task as any}
+        />
       </PortalWrapper>
     </>
   );

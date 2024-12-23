@@ -53,7 +53,7 @@ export async function createNewTaskDB(data: any) {
         columnId: data.id,
         subtasks: {
           create: data.subtasks.map((subtask: any) => ({
-            title: subtask.name, 
+            title: subtask.name,
           })),
         },
       },
@@ -167,6 +167,17 @@ export async function getBoardById(id: string) {
 export async function deleteBoardById(id: string) {
   try {
     const data = await prisma.board.delete({ where: { id } });
+    console.log("deleted");
+    revalidatePath("/");
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function deleteTaskById(id: string) {
+  try {
+    const data = await prisma.task.delete({ where: { id } });
     console.log("deleted");
     revalidatePath("/");
     return data;

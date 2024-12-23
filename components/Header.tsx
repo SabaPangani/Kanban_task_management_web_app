@@ -1,5 +1,5 @@
 "use client";
-import {  ModalType } from "@/lib/types";
+import { ModalType } from "@/lib/types";
 import React, { useContext } from "react";
 import { ModalContext } from "@/app/Providers";
 import ModalDeleteBoard from "@/ui/modals/ModalDeleteBoard";
@@ -7,12 +7,14 @@ import { usePathname } from "next/navigation";
 import PortalWrapper from "@/ui/modals/PortalWrapper";
 import { useBoardContext } from "@/lib/BoardContext";
 import TaskModal from "@/ui/modals/CreateTaskModal";
+import CreateTaskModal from "@/ui/modals/CreateTaskModal";
+import { sourceMapsEnabled } from "process";
 
 export default function Header() {
   const { activeModal, setActiveModal } = useContext(ModalContext) as ModalType;
   const id = usePathname().replace("/", "");
   const { selectedBoard } = useBoardContext();
- 
+
   return (
     <>
       <header className="bg-white w-full ml-auto h-[97px] flex items-center justify-between px-10  col-span-2 row-start-1 row-span-1">
@@ -25,7 +27,7 @@ export default function Header() {
             className="btn-primary disabled:opacity-20"
             disabled={!selectedBoard?.columns.length}
             onClick={() => {
-              setActiveModal("taskModal");
+              setActiveModal("createTaskModal");
             }}
           >
             + Add New Task
@@ -47,8 +49,8 @@ export default function Header() {
       <PortalWrapper modalName="deleteModal">
         <ModalDeleteBoard id={id} />
       </PortalWrapper>
-      <PortalWrapper modalName="taskModal">
-        <TaskModal selectedBoard={selectedBoard!}/>
+      <PortalWrapper modalName="createTaskModal">
+        <CreateTaskModal selectedBoard={selectedBoard!} isEditing={false} />
       </PortalWrapper>
     </>
   );

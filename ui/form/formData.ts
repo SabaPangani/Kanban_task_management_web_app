@@ -15,6 +15,7 @@ export const defaultBoardValues = (board: Board) => {
 };
 
 export const defaultTaskValues = (task: Task) => {
+  console.log(task)
   if (task) {
     return {
       title: task.title,

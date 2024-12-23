@@ -22,6 +22,7 @@ export default async function Board({ params }: { params: { title: string } }) {
       <PortalWrapper modalName="editBoard">
         <BoardModal isEditing={true} board={data as any} id={params.title} />
       </PortalWrapper>
+      
     </>
   );
 }

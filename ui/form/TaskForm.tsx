@@ -13,10 +13,13 @@ import { defaultTaskValues } from "./formData";
 export default function TaskForm({
   selectedBoard,
   task,
+  isEditing,
 }: {
   selectedBoard: Board;
   task?: Task;
+  isEditing: boolean;
 }) {
+  console.log(task)
   const {
     register,
     handleSubmit,
@@ -75,7 +78,7 @@ export default function TaskForm({
         <FormHeader name="Description" />
         {/* <FormField register={register} name="description" /> */}
         <textarea
-        {...register("description", { required: "description is required" })}
+          {...register("description", { required: "description is required" })}
           name="description"
           className="w-full outline-none border border-neutral-lightestGray rounded-md py-2 px-3 text-neutral-dark font-medium resize-none placeholder:text-sm text-headingM"
           placeholder="e.g. It’s always good to take a break. This 15 minute break will 
@@ -119,7 +122,7 @@ export default function TaskForm({
           {...register("status", { required: "Status is required" })}
           className="border border-neutral-light rounded-md p-2 w-full text-neutral-dark outline-none text-headingM"
         >
-          {selectedBoard.columns.map((column) => (
+          {selectedBoard?.columns.map((column) => (
             <option key={column.id} value={column.name}>
               {column.name}
             </option>
@@ -132,6 +135,4 @@ export default function TaskForm({
     </form>
   );
 }
-function setActiveModal(arg0: string) {
-  throw new Error("Function not implemented.");
-}
+
