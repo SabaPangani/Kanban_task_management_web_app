@@ -18,7 +18,6 @@ export default function Portal({
 
   useEffect(() => {
     setMounted(true);
-    console.log(classes)
   }, []);
 
   return (

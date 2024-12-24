@@ -1,12 +1,13 @@
-import Column from "@/components/Column";
+import Column from "@/components/ColumnCard";
 import { getBoardById } from "@/lib/db";
 import NewColumn from "@/components/NewColumn";
 import PortalWrapper from "@/ui/modals/PortalWrapper";
 import BoardModal from "@/ui/modals/BoardModal";
-import { isCompositeComponent } from "react-dom/test-utils";
+import { Column as ColumnType } from "@/lib/types";
 
 export default async function Board({ params }: { params: { title: string } }) {
   const data = await getBoardById(params?.title!);
+
   return (
     <>
       <div className="col-span-2 row-start-2 row-span-1 text-end text-black justify-self-start px-10 mt-5">
