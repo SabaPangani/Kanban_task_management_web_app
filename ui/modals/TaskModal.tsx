@@ -1,8 +1,9 @@
 "use client";
 import TaskDropdown from "@/components/TaskDropdown";
 import { Column, Task } from "@/lib/types";
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { useBoardContext } from "@/lib/BoardContext";
+import SubtaskCard from "@/components/SubtaskCard";
 
 export default function TaskModal({
   task,
@@ -23,7 +24,7 @@ export default function TaskModal({
         className="bg-white text-neutral-dark font-medium px-7 py-5 w-full max-w-[480px] flex flex-col gap-y-7 rounded-md"
       >
         <header className="flex flex-row justify-between">
-          <div>
+          <div className="w-full">
             <h1 className="text-headingL font-bold mb-3">{task.title}</h1>
             <p className="text-neutral-lightGray text-headingM">
               {task.description}
@@ -36,7 +37,9 @@ export default function TaskModal({
                 setShowDropdown((prev) => !prev);
               }}
             ></i>
-            {showDropdown && <TaskDropdown task={task} selectedBoard={selectedBoard!}/>}
+            {showDropdown && (
+              <TaskDropdown task={task} selectedBoard={selectedBoard!} />
+            )}
           </div>
         </header>
 
@@ -46,13 +49,8 @@ export default function TaskModal({
           </span>
           <div>
             {task.subtasks.map((subtask) => (
-              <div
-                className="bg-neutral-lightestGray p-2 rounded-md my-2"
-                key={subtask.id}
-              >
-                <p className="text-headingM font-bold text-neutral-lightGray">
-                  {subtask.title}
-                </p>
+              <div key={subtask.id}>
+                <SubtaskCard subtask={subtask} />
               </div>
             ))}
           </div>

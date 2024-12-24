@@ -32,5 +32,18 @@ export type Task = {
 export type Subtask = {
   id: string;
   title: string;
+  status: string;
   isComplete: boolean;
+};
+
+export type FormValues = {
+  title: string;
+  columns: Column[];
+};
+
+export type TaskFormValues = {
+  title: string;
+  description: string | null;
+  status: string;
+  subtasks: Subtask[];
 };

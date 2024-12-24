@@ -1,7 +1,11 @@
+import { ModalContext } from "@/app/Providers";
 import { deleteBoardById } from "@/lib/db";
-import React from "react";
+import { ModalType } from "@/lib/types";
+import React, { useContext } from "react";
 
 export default function ModalDeleteBoard({ id }: { id: string }) {
+  const { activeModal, setActiveModal } = useContext(ModalContext) as ModalType;
+
   return (
     <div
       className="flex flex-col px-7 p-5 bg-white max-w-[480px] w-full rounded-xl"
@@ -22,6 +26,7 @@ export default function ModalDeleteBoard({ id }: { id: string }) {
           className="btn-destructive w-full py-2"
           onClick={() => {
             deleteBoardById(id);
+            setActiveModal("")
           }}
         >
           Delete

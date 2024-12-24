@@ -1,14 +1,16 @@
+"use client";
 import { useFieldArray, useForm } from "react-hook-form";
 import FormField from "./FormField";
 import FormSection from "./FormSection";
 import FormHeader from "./FormHeader";
 import Image from "next/image";
 import del from "@/components/svgs/delete.svg";
-import { Board, ModalType, Task } from "@/lib/types";
-import { useContext } from "react";
+import { Board, ModalType, Task, TaskFormValues } from "@/lib/types";
+import { useContext, useEffect } from "react";
 import { ModalContext } from "@/app/Providers";
 import { createNewTask } from "@/lib/actions";
 import { defaultTaskValues } from "./formData";
+import { updateTaskDB } from "@/lib/db";
 
 export default function TaskForm({
   selectedBoard,
@@ -19,7 +21,7 @@ export default function TaskForm({
   task?: Task;
   isEditing: boolean;
 }) {
-  console.log(task)
+  console.log(task);
   const {
     register,
     handleSubmit,
@@ -27,11 +29,12 @@ export default function TaskForm({
     control,
     setValue,
     getValues,
-  } = useForm<any>({
+  } = useForm<TaskFormValues>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
     defaultValues: defaultTaskValues(task!),
   });
+  console.log("Default Values:", defaultTaskValues(task!));
   const { fields, append, remove } = useFieldArray({
     control,
     name: "subtasks",
@@ -39,16 +42,28 @@ export default function TaskForm({
   const { setActiveModal } = useContext(ModalContext) as ModalType;
 
   const addNewSubtask = () => {
-    append({ name: "" });
+    append({ id: "", title: "", status: "", isComplete: false });
   };
 
-  const onFormSubmit = async (data: Task) => {
-    console.log(selectedBoard);
+  useEffect(() => {
+    if (selectedBoard?.columns?.length) {
+      setValue("status", selectedBoard.columns[0].name);
+    }
+  }, [selectedBoard, setValue]);
+  const onFormSubmit = async (data: TaskFormValues) => {
     const id = selectedBoard.columns[0].id;
     const modifiedData = { ...data, id };
-    console.log(data);
     try {
-      createNewTask(modifiedData);
+      const taskData: Task = {
+        id: "",
+        title: data.title,
+        subtasks: data.subtasks,
+        description: data.description,
+        status: data.status,
+      };
+      isEditing
+        ? updateTaskDB(taskData, task?.id!)
+        : createNewTask(modifiedData);
       if (!isSubmitting) {
         setActiveModal("");
       }
@@ -74,16 +89,21 @@ export default function TaskForm({
           register={register}
           name="title"
           placeholder="e.g. Take coffee break"
+          errors={errors}
         />
         <FormHeader name="Description" />
-        {/* <FormField register={register} name="description" /> */}
         <textarea
-          {...register("description", { required: "description is required" })}
+          {...register("description", { required: "Field is required" })}
           name="description"
           className="w-full outline-none border border-neutral-lightestGray rounded-md py-2 px-3 text-neutral-dark font-medium resize-none placeholder:text-sm text-headingM"
           placeholder="e.g. It’s always good to take a break. This 15 minute break will 
             recharge the batteries a little."
         ></textarea>
+        {errors["description"] && (
+          <p className="text-accent-red text-headingM">
+            {errors["description"]?.message!}
+          </p>
+        )}
       </FormSection>
       <FormSection>
         {fields.length ? <FormHeader name="Subtasks" /> : ""}
@@ -92,11 +112,20 @@ export default function TaskForm({
             className="flex items-center justify-between gap-x-5"
             key={field.id}
           >
-            <FormField
-              register={register}
-              name={`subtasks.${index}.name`}
-              placeholder="e.g. Make coffee"
-            />
+            <div className="flex flex-col w-full">
+              <input
+                type="text"
+                className="w-full outline-none border border-neutral-lightestGray rounded-md py-2 px-3 text-neutral-dark font-medium placeholder:text-sm text-headingM"
+                {...register(`subtasks.${index}.title`, {
+                  required: "Field is required",
+                })}
+              />
+              {errors.subtasks?.[index]?.title && (
+                <p className="text-accent-red text-headingM mt-1">
+                  {errors.subtasks[index]?.title.message}
+                </p>
+              )}
+            </div>
             <Image
               className="cursor-pointer"
               src={del}
@@ -119,7 +148,7 @@ export default function TaskForm({
       <FormSection>
         <FormHeader name="Status" />
         <select
-          {...register("status", { required: "Status is required" })}
+          {...register("status", { required: "Field is required" })}
           className="border border-neutral-light rounded-md p-2 w-full text-neutral-dark outline-none text-headingM"
         >
           {selectedBoard?.columns.map((column) => (
@@ -131,8 +160,9 @@ export default function TaskForm({
         {errors.status && <span className="text-red-500 text-sm"></span>}
       </FormSection>
 
-      <button className="btn-primary">Create Task</button>
+      <button className="btn-primary">
+        {isEditing ? "Update Task" : "Create Task"}
+      </button>
     </form>
   );
 }
-

@@ -3,11 +3,10 @@ import { getBoardById } from "@/lib/db";
 import NewColumn from "@/components/NewColumn";
 import PortalWrapper from "@/ui/modals/PortalWrapper";
 import BoardModal from "@/ui/modals/BoardModal";
-
+import { Column as ColumnType } from "@/lib/types";
 
 export default async function Board({ params }: { params: { title: string } }) {
   const data = await getBoardById(params?.title!);
-
 
   return (
     <>
@@ -22,7 +21,6 @@ export default async function Board({ params }: { params: { title: string } }) {
       <PortalWrapper modalName="editBoard">
         <BoardModal isEditing={true} board={data as any} id={params.title} />
       </PortalWrapper>
-      
     </>
   );
 }

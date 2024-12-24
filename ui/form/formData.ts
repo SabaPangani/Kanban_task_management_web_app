@@ -15,13 +15,18 @@ export const defaultBoardValues = (board: Board) => {
 };
 
 export const defaultTaskValues = (task: Task) => {
-  console.log(task)
+  console.log(task, " defaultValues");
   if (task) {
     return {
       title: task.title,
       description: task.description,
       status: task.status,
-      subtasks: task.subtasks,
+      subtasks: task.subtasks.map((subtask) => ({
+        id: subtask.id,
+        name: subtask.title || "",
+        status: subtask.status,
+        isComplete: subtask.isComplete,
+      })),
     };
   } else {
     return {

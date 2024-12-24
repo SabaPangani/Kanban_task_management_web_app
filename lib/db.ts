@@ -185,6 +185,35 @@ export async function deleteTaskById(id: string) {
     console.error(error);
   }
 }
+export async function updateTaskDB(data: Task, id: string) {
+  try {
+    const { subtasks, ...taskData } = data;
+
+    const subtasksUpdate = subtasks.map((subtask) => ({
+      where: { id: subtask.id },
+      data: {
+        title: subtask.title,
+        status: subtask.status,
+      },
+    }));
+
+    const task = await prisma.task.update({
+      where: { id },
+      data: {
+        ...taskData,
+        subtasks: {
+          update: subtasksUpdate,
+        },
+      },
+    });
+
+    revalidatePath("/");
+    return task;
+  } catch (error) {
+    console.error("Error updating board:", error);
+    throw error;
+  }
+}
 
 export async function deleteColumnById(id: string) {
   try {

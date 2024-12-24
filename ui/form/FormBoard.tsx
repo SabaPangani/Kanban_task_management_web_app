@@ -10,7 +10,7 @@ import Image from "next/image";
 import { createNewBoard, updateBoard } from "@/lib/actions";
 import { defaultBoardValues } from "../form/formData";
 import { ModalContext } from "@/app/Providers";
-
+import { FormValues } from "@/lib/types";
 export default function FormBoard({
   isEditing,
   board,
@@ -29,26 +29,45 @@ export default function FormBoard({
     control,
     setValue,
     getValues,
-  } = useForm<any>({
+  } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
     defaultValues: defaultBoardValues(board!),
   });
+  console.log("Default Values:", defaultBoardValues(board!));
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "columns",
   });
 
   const addNewColumn = () => {
-    append({ name: "" });
+    append({
+      id: "",
+      name: "",
+      tasks: [],
+    });
   };
 
+  console.log(errors, " errors");
   useEffect(() => {
     console.log(fields);
   }, [fields]);
-  const onFormSubmit = async (data: Board) => {
+  const onFormSubmit = async (data: FormValues) => {
     try {
-      isEditing ? await updateBoard(data, id) : await createNewBoard(data);
+      console.log(data, " Data");
+      const boardData: Board = {
+        id: "",
+        title: data.title,
+        columns: data.columns.map((column) => ({
+          ...column,
+          id: column.id || crypto.randomUUID(),
+          tasks: column.tasks || [],
+        })),
+      };
+      isEditing
+        ? await updateBoard(boardData, id)
+        : await createNewBoard(boardData);
       console.log(data);
       if (!isSubmitting) {
         setActiveModal("");
@@ -74,19 +93,36 @@ export default function FormBoard({
 
       <FormSection>
         <FormHeader name="Name" />
-        <FormField register={register} name="title" placeholder="e.g. Web Design"/>
+        <FormField
+          register={register}
+          name="title"
+          placeholder="e.g. Web Design"
+          errors={errors}
+        />
       </FormSection>
       <FormSection>
         {fields.length ? <FormHeader name="Columns" /> : ""}
         {fields.map((field: any, index: number) => (
           <div
-            className="flex items-center justify-between gap-x-5"
+            className="flex items-start justify-between gap-x-5"
             key={field.id}
           >
-            <FormField register={register} name={`columns.${index}.name`} placeholder="e.g Todo"/>
-
+            <div className="flex flex-col w-full">
+              <input
+                type="text"
+                className="w-full outline-none border border-neutral-lightestGray rounded-md py-2 px-3 text-neutral-dark font-medium placeholder:text-sm text-headingM"
+                {...register(`columns.${index}.name`, {
+                  required: "Field is required",
+                })}
+              />
+              {errors.columns?.[index]?.name && (
+                <p className="text-accent-red text-headingM mt-1">
+                  {errors.columns[index]?.name.message}
+                </p>
+              )}
+            </div>
             <Image
-              className="cursor-pointer"
+              className="cursor-pointer mt-[10px]"
               src={del}
               alt="Delete icon"
               onClick={() => {
