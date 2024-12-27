@@ -5,29 +5,30 @@ import { ModalType, Task } from "@/lib/types";
 import CreateTaskModal from "@/ui/modals/CreateTaskModal";
 import PortalWrapper from "@/ui/modals/PortalWrapper";
 import TaskModal from "@/ui/modals/TaskModal";
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import React, { useContext } from "react";
 
 export default function TaskCard({ task }: { task: Task }) {
   const { selectedBoard } = useBoardContext();
   const { setActiveModal } = useContext(ModalContext) as ModalType;
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: task.id,
-    data: {
-      type: "Task",
-      task,
-    },
-  });
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
-    : undefined;
+  const { isOver, attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: task.id,
+      data: {
+        type: "Task",
+        task,
+      },
+    });
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+    color: isOver ? "green" : undefined,
+  };
   return (
     <>
       <div
         className="bg-white font-bold px-5 py-4 rounded-lg shadow-lg w-full max-w-[280px] cursor-pointer"
-        key={task.id}
         onClick={() => {
           setActiveModal(`task-${task.id}`);
         }}
@@ -38,7 +39,7 @@ export default function TaskCard({ task }: { task: Task }) {
       >
         <p className="mb-1 text-headingM">{task.title}</p>
         <span className="text-neutral-lightGray text-headingM">
-          0 of {task?.subtasks.length} substasks
+          0 of {task?.subtasks?.length} substasks
         </span>
       </div>
 
