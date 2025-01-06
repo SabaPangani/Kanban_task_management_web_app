@@ -27,6 +27,7 @@ export type Task = {
   description: string | null;
   status: string;
   subtasks: Subtask[];
+  columnId: string;
 };
 
 export type Subtask = {
