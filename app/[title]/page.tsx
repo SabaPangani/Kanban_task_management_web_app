@@ -30,10 +30,11 @@ export default function BoardPage({ data, id }: { data: any; id: string }) {
   );
 
   useEffect(() => {
-    if (selectedBoard?.columns) {
-      setColumns(selectedBoard.columns);
+    if (activeColumn || activeTask) {
+      setActiveColumn(null);
+      setActiveTask(null);
     }
-  }, [selectedBoard?.columns]);
+  }, [activeColumn, activeTask]);
 
   async function handleDragEnd(event: DragEndEvent) {
     setActiveColumn(null);
@@ -42,44 +43,128 @@ export default function BoardPage({ data, id }: { data: any; id: string }) {
 
     if (!over) return;
 
-    const activeColumnId = active.id;
-    const overColumnId = over.id;
+    const activeType = active.data.current?.type;
+    const overType = over.data.current?.type;
 
-    if (activeColumnId === overColumnId) return;
+    if (activeType === "Column" && overType === "Column") {
+      // Handle column reordering
+      const activeColumnId = active.id;
+      const overColumnId = over.id;
 
-    setColumns((prevColumns) => {
-      const activeColumnIndex = prevColumns?.findIndex(
-        (col) => col.id === activeColumnId
-      );
-      const overColumnIndex = prevColumns?.findIndex(
-        (col) => col.id === overColumnId
-      );
+      if (activeColumnId === overColumnId) return;
 
-      if (
-        activeColumnIndex === undefined ||
-        overColumnIndex === undefined ||
-        activeColumnIndex === -1 ||
-        overColumnIndex === -1
-      ) {
-        return prevColumns;
-      }
+      setColumns((prevColumns) => {
+        const activeColumnIndex = prevColumns?.findIndex(
+          (col) => col.id === activeColumnId
+        );
+        const overColumnIndex = prevColumns?.findIndex(
+          (col) => col.id === overColumnId
+        );
 
-      const updatedColumns = arrayMove(
-        prevColumns!,
-        activeColumnIndex,
-        overColumnIndex
-      );
-
-      (async () => {
-        try {
-          await updateColumns(updatedColumns, id);
-        } catch (error) {
-          console.error("Error updating columns in the database:", error);
+        if (
+          activeColumnIndex === undefined ||
+          overColumnIndex === undefined ||
+          activeColumnIndex === -1 ||
+          overColumnIndex === -1
+        ) {
+          return prevColumns;
         }
-      })();
 
-      return updatedColumns;
-    });
+        const updatedColumns = arrayMove(
+          prevColumns!,
+          activeColumnIndex,
+          overColumnIndex
+        );
+
+        (async () => {
+          try {
+            await updateColumns(updatedColumns, id);
+          } catch (error) {
+            console.error("Error updating columns in the database:", error);
+          }
+        })();
+
+        return updatedColumns;
+      });
+    } else if (
+      activeType === "Task" &&
+      (overType === "Task" || overType === "Column")
+    ) {
+      // Handle task reordering or movement between columns
+      const activeTaskId = active.id;
+      const overId = over.id;
+
+      setColumns((prevColumns) => {
+        if (!prevColumns) return prevColumns;
+
+        const activeColumnIndex = prevColumns.findIndex((col) =>
+          col.tasks.some((task) => task.id === activeTaskId)
+        );
+        const activeColumn = prevColumns[activeColumnIndex];
+        const activeTaskIndex = activeColumn.tasks.findIndex(
+          (task) => task.id === activeTaskId
+        );
+
+        const overColumnIndex =
+          overType === "Column"
+            ? prevColumns.findIndex((col) => col.id === overId)
+            : prevColumns.findIndex((col) =>
+                col.tasks.some((task) => task.id === overId)
+              );
+        const overColumn = prevColumns[overColumnIndex];
+        const overTaskIndex =
+          overType === "Task"
+            ? overColumn.tasks.findIndex((task) => task.id === overId)
+            : null;
+
+        let updatedColumns = [...prevColumns];
+        let movedTask = null;
+
+        if (activeColumn.id === overColumn.id) {
+          // Reorder within the same column
+          const updatedTasks = arrayMove(
+            activeColumn.tasks,
+            activeTaskIndex,
+            overTaskIndex!
+          );
+          updatedColumns = updatedColumns.map((col, index) =>
+            index === activeColumnIndex ? { ...col, tasks: updatedTasks } : col
+          );
+        } else {
+          // Move task to another column
+          [movedTask] = activeColumn.tasks.splice(activeTaskIndex, 1);
+          if (overTaskIndex !== null) {
+            overColumn.tasks.splice(overTaskIndex, 0, movedTask);
+          } else {
+            overColumn.tasks.push(movedTask);
+          }
+
+          updatedColumns = updatedColumns.map((col, index) =>
+            index === activeColumnIndex
+              ? { ...activeColumn }
+              : index === overColumnIndex
+              ? { ...overColumn }
+              : col
+          );
+        }
+
+        (async () => {
+          try {
+            if (movedTask) {
+              await updateTaskDB(movedTask, movedTask.id);
+            }
+            await updateColumns(updatedColumns, id);
+          } catch (error) {
+            console.error(
+              "Error updating tasks or columns in the database:",
+              error
+            );
+          }
+        })();
+
+        return updatedColumns;
+      });
+    }
   }
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -175,12 +260,12 @@ export default function BoardPage({ data, id }: { data: any; id: string }) {
             <NewColumn />
           </div>
         </div>
-        {createPortal(
+        {/* {createPortal(
           <DragOverlay>
             {activeColumn && <Column column={activeColumn} />}
           </DragOverlay>,
           document.body
-        )}
+        )} */}
       </DndContext>
       <PortalWrapper modalName="editBoard">
         <BoardModal isEditing={true} board={selectedBoard as any} id={id} />
