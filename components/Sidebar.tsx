@@ -16,7 +16,7 @@ export default function Sidebar({ data }: { data: Board[] }) {
   const [showSidebar, setShowSidebar] = useState(true);
   const { activeModal, setActiveModal } = useContext(ModalContext) as ModalType;
   const router = useRouter();
-  const { setSelectedBoard } = useBoardContext();
+  const { setSelectedBoard,selectedBoard } = useBoardContext();
 
   console.log(data);
   return (
@@ -48,6 +48,7 @@ export default function Sidebar({ data }: { data: Board[] }) {
                     onClick={() => {
                       router.push(board.id);
                       setSelectedBoard(board)
+                      console.log(selectedBoard)
                     }}
                   >
                     <Image src={boardSvg} alt="Board svg" />

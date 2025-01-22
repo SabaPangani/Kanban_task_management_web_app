@@ -12,5 +12,5 @@ export default function BoardModal({
   board?: Board;
   id?: string;
 }) {
-  return <FormBoard isEditing={isEditing} board={board!} id={id!}/>;
+  return <FormBoard isEditing={isEditing} board={board!} id={board?.id!} />;
 }

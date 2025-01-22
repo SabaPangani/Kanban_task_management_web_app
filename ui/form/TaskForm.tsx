@@ -95,7 +95,11 @@ export default function TaskForm({
         <textarea
           {...register("description", { required: "Field is required" })}
           name="description"
-          className="w-full outline-none border border-neutral-lightestGray rounded-md py-2 px-3 text-neutral-dark font-medium resize-none placeholder:text-sm text-headingM"
+          className={`w-full outline-none border border-neutral-lightestGray rounded-md py-2 px-3 text-neutral-dark font-medium resize-none placeholder:text-sm text-headingM ${
+            errors["description"]
+              ? "border-accent-red bg-red-50"
+              : "border-neutral-lightestGray"
+          }`}
           placeholder="e.g. It’s always good to take a break. This 15 minute break will 
             recharge the batteries a little."
         ></textarea>
@@ -115,10 +119,15 @@ export default function TaskForm({
             <div className="flex flex-col w-full">
               <input
                 type="text"
-                className="w-full outline-none border border-neutral-lightestGray rounded-md py-2 px-3 text-neutral-dark font-medium placeholder:text-sm text-headingM"
+                className={`w-full outline-none border border-neutral-lightestGray rounded-md py-2 px-3 text-neutral-dark font-medium placeholder:text-sm text-headingM  ${
+                  errors.subtasks[index]?.title.message
+                    ? "border-accent-red bg-red-50"
+                    : "border-neutral-lightestGray"
+                }`}
                 {...register(`subtasks.${index}.title`, {
                   required: "Field is required",
                 })}
+                placeholder="e.g. Make coffee"
               />
               {errors.subtasks?.[index]?.title && (
                 <p className="text-accent-red text-headingM mt-1">

@@ -1,22 +1,12 @@
 "use client";
 import React, { createContext, useState, useContext } from "react";
 import { Board } from "./types";
-import { defaultBoardValues } from "@/ui/form/formData";
 
-type BoardContextType = {
-  selectedBoard: Board | null;
-  setSelectedBoard: React.Dispatch<React.SetStateAction<Board | null>>;
-};
-
-const BoardContext = createContext<BoardContextType | undefined>(undefined);
+const BoardContext = createContext(undefined);
 
 export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
-  const [selectedBoard, setSelectedBoard] = useState<Board | null>({
-    id: "",
-    title: "",
-    columns: [],
-  });
-  
+  const [isDropped, setIsDropped] = useState<Board | null>(null);
+
   return (
     <BoardContext.Provider value={{ selectedBoard, setSelectedBoard }}>
       {children}

@@ -1,5 +1,6 @@
 import { Board, Task } from "./types";
 import { createNewBoardDB, createNewTaskDB, updateBoardDB } from "./db";
+import { revalidatePath } from "next/cache";
 
 export async function createNewBoard(data: Board) {
   try {

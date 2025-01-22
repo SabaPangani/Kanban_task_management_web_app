@@ -76,8 +76,9 @@ export async function updateBoardDB(data: Board, id: string) {
     });
 
     await updateColumns(columns, id);
+   
+    revalidatePath(`/`);
 
-    revalidatePath("/");
     return board;
   } catch (error) {
     console.error("Error updating board:", error);
@@ -87,6 +88,12 @@ export async function updateBoardDB(data: Board, id: string) {
 
 export async function updateColumns(columns: Column[], boardId: string) {
   try {
+    const existingColumns = await prisma.column.findMany({
+      where: { boardId },
+      select: { id: true },
+    });
+    const existingColumnIds = existingColumns.map((col) => col.id);
+
     const columnIds = columns
       .filter((column) => column.id)
       .map((column) => column.id);
@@ -99,7 +106,7 @@ export async function updateColumns(columns: Column[], boardId: string) {
     });
 
     const updatePromises = columns.map((column) => {
-      if (column.id) {
+      if (column.id && existingColumnIds.includes(column.id)) {
         return prisma.column.update({
           where: { id: column.id },
           data: { name: column.name },
@@ -120,7 +127,6 @@ export async function updateColumns(columns: Column[], boardId: string) {
     throw error;
   }
 }
-
 export async function getAllBoard() {
   try {
     const data: any[] = await prisma.board.findMany({
