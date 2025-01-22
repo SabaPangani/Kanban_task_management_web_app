@@ -76,8 +76,9 @@ export async function updateBoardDB(data: Board, id: string) {
     });
 
     await updateColumns(columns, id);
+   
+    revalidatePath(`/`);
 
-    revalidatePath("/");
     return board;
   } catch (error) {
     console.error("Error updating board:", error);
@@ -87,45 +88,23 @@ export async function updateBoardDB(data: Board, id: string) {
 
 export async function updateColumns(columns: Column[], boardId: string) {
   try {
-    // Fetch existing columns from the database
     const existingColumns = await prisma.column.findMany({
       where: { boardId },
-      include: {
-        tasks: {
-          include: {
-            subtasks: true,
-          },
-        },
-      },
+      select: { id: true },
     });
-
     const existingColumnIds = existingColumns.map((col) => col.id);
 
-    // Identify columns to delete
-    const columnIdsToDelete = existingColumnIds.filter(
-      (id) => !columns.some((column) => column.id === id)
-    );
+    const columnIds = columns
+      .filter((column) => column.id)
+      .map((column) => column.id);
 
-    // Delete tasks and subtasks for columns to delete
-    for (const columnId of columnIdsToDelete) {
-      const column = existingColumns.find((col) => col.id === columnId);
-      if (column) {
-        for (const task of column.tasks) {
-          await prisma.subtask.deleteMany({ where: { taskId: task.id } });
-          await prisma.task.delete({ where: { id: task.id } });
-        }
-      }
-    }
-
-    // Delete columns
     await prisma.column.deleteMany({
       where: {
         boardId,
-        id: { in: columnIdsToDelete },
+        id: { notIn: columnIds },
       },
     });
 
-    // Update or create columns
     const updatePromises = columns.map((column) => {
       if (column.id && existingColumnIds.includes(column.id)) {
         return prisma.column.update({
@@ -148,7 +127,6 @@ export async function updateColumns(columns: Column[], boardId: string) {
     throw error;
   }
 }
-
 export async function getAllBoard() {
   try {
     const data: any[] = await prisma.board.findMany({

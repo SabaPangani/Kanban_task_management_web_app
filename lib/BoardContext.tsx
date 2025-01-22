@@ -16,7 +16,7 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
     title: "",
     columns: [],
   });
-
+  
   return (
     <BoardContext.Provider value={{ selectedBoard, setSelectedBoard }}>
       {children}
